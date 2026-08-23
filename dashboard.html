@@ -58,7 +58,7 @@
             }
             
             /* Prevent panels from overflowing screen */
-            .panel {
+            .panel, .pos-panel {
                 margin: 10px !important;
                 width: calc(100vw - 20px) !important;
                 box-sizing: border-box !important;
@@ -111,7 +111,7 @@
             }
             
             /* 3. Native Horizontal Scrolling for Tables */
-            .panel {
+            .panel, .pos-panel {
                 overflow-x: auto !important;
                 -webkit-overflow-scrolling: touch !important; /* Smooth scrolling on iOS */
             }
@@ -123,7 +123,7 @@
                 white-space: nowrap !important; /* Prevent text from stacking inside cells */
             }
             
-            /* Center chart inside panel */
+                        /* Center chart inside panel */
             .chart-container {
                 width: 100% !important;
                 padding: 0 !important;
@@ -132,6 +132,82 @@
                 max-width: 100% !important;
                 height: auto !important;
             }
+            
+            /* 4. Fix Product Cards & Header Actions */
+            .table-header-actions {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+            }
+            .table-search {
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .table-filters {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
+            .table-filters select {
+                flex: 1 1 calc(50% - 4px) !important;
+                min-width: 0 !important;
+            }
+            
+                        /* Ensure POS cards fill the space beautifully */
+            .pos-product-list {
+                grid-template-columns: 1fr !important;
+                width: 100% !important;
+            }
+            .pos-card {
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
+            /* 5. Checkout Cart Vertical Layout */
+            .pos-cart-table, .pos-cart-table thead, .pos-cart-table tbody, .pos-cart-table th, .pos-cart-table td, .pos-cart-table tr { 
+                display: block !important; 
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .pos-cart-table thead tr { 
+                display: none !important; 
+            }
+            .pos-cart-table tr { 
+                border: 1px solid var(--border) !important; 
+                margin-bottom: 15px !important; 
+                border-radius: 8px !important; 
+                padding: 15px !important;
+                background: #ffffff !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+                position: relative !important;
+            }
+            .pos-cart-table td { 
+                border: none !important;
+                padding: 6px 0 !important;
+                text-align: right !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                white-space: normal !important;
+            }
+            .pos-cart-table td:nth-child(1) { 
+                justify-content: flex-start !important; 
+                border-bottom: 1px solid #e2e8f0 !important; 
+                padding-bottom: 12px !important; 
+                margin-bottom: 8px !important; 
+            }
+            .pos-cart-table td:nth-child(2)::before { content: "Price"; font-weight: normal; color: var(--text-light); }
+            .pos-cart-table td:nth-child(3)::before { content: "Quantity"; font-weight: normal; color: var(--text-light); }
+            .pos-cart-table td:nth-child(4)::before { content: "Subtotal"; font-weight: normal; color: var(--text-light); }
+            .pos-cart-table td:nth-child(5) { 
+                position: absolute !important; 
+                top: 15px !important; 
+                right: 15px !important; 
+                padding: 0 !important; 
+                width: auto !important; 
+            }
+            .cart-delete { font-size: 1.2rem !important; color: var(--red) !important; padding: 5px !important; }
         }
     </style>
 </head>
@@ -867,7 +943,7 @@
                     </div>
                     <div id="client-form-panel" class="panel" style="display:none; margin-bottom:20px;">
                         <h3 style="margin-bottom:15px;">Add New Client</h3>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                        <div class="form-grid">
                             <div class="form-group"><label class="form-label">Client Name *</label><input type="text" id="client-name" class="form-input" placeholder="e.g. John Doe"></div>
                             <div class="form-group"><label class="form-label">Phone Number</label><input type="text" id="client-phone" class="form-input" placeholder="e.g. 0712345678"></div>
                         </div>
@@ -892,7 +968,7 @@
                 <!-- Add Supplier Form (hidden by default) -->
                 <div id="supplier-form-panel" class="panel" style="display:none; margin-bottom:20px;">
                     <h3 style="margin-bottom:15px;">Add New Supplier</h3>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                    <div class="form-grid">
                         <div class="form-group">
                             <label class="form-label">Supplier Name <span style="color:var(--red)">*</span></label>
                             <input type="text" id="sup-name" class="form-input" placeholder="e.g. Nike Kenya Ltd">
@@ -1265,7 +1341,7 @@
                     <div><h1>Record <span>Sale</span></h1><p>Select items sold and process the payment.</p></div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start;">
+                <div class="middle-grid">
 
                     <!-- LEFT: Item Selection -->
                     <div>
@@ -1570,6 +1646,11 @@
 
 </body>
 </html>
+
+
+
+
+
 
 
 
