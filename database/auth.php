@@ -18,6 +18,12 @@ if ($action === 'login') {
     $user = $stmt->fetch();
     
     if ($user && password_verify($password, $user['password'])) {
+        $expected_role = $_POST['expected_role'] ?? '';
+        
+        if (!empty($expected_role) && strcasecmp($user['role'], $expected_role) !== 0) {
+            sendJsonResponse('error', "Access denied. You are registered as a {$user['role']}, please use the correct login portal.");
+        }
+        
         if ($user['status'] !== 'Active') {
             sendJsonResponse('error', 'Your account is inactive. Please contact the administrator.');
         }
@@ -79,3 +85,4 @@ else {
     sendJsonResponse('error', 'Invalid action.');
 }
 ?>
+
