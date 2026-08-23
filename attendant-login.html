@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendant Login - Linchking Stores</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --teal: #42b8a4;
+            --teal-light: #e6f7f5;
+            --navy: #0f172a;
+            --white: #ffffff;
+            --text: #334155;
+            --muted: #94a3b8;
+            --border: #e2e8f0;
+            --font: 'Poppins', sans-serif;
+            --ease: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font); height: 100vh; display: flex; align-items: center; justify-content: center; background: #f1f5f9; padding: 20px; overflow: hidden; }
+        
+        .login-container {
+            display: flex;
+            width: 100%;
+            max-width: 1100px;
+            height: 94vh;
+            min-height: 500px;
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .left-panel { flex: 1; background: var(--navy); color: var(--white); padding: 30px 40px; display: flex; flex-direction: column; position: relative; }
+        .logo-img { height: 35px; filter: brightness(0) invert(1); margin-bottom: 20px; }
+        
+        .welcome-sub { font-size: 1.1rem; color: var(--teal); font-weight: 500; margin-bottom: 2px; }
+        .welcome-title { font-size: 2.4rem; font-weight: 800; margin-bottom: 10px; line-height: 1.1; color: var(--white); }
+        .welcome-desc { font-size: 0.85rem; color: #cbd5e1; max-width: 320px; line-height: 1.4; }
+        
+        .shoe-img { width: 100%; max-width: 320px; margin: auto; transform: rotate(-5deg); filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4)); }
+        
+        .features { margin-top: auto; display: flex; flex-direction: column; gap: 15px; }
+        .feat-item { display: flex; align-items: flex-start; gap: 12px; }
+        .feat-icon { color: var(--teal); font-size: 1.1rem; margin-top: 2px; }
+        .feat-text h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 2px; color: var(--white); }
+        .feat-text p { font-size: 0.75rem; color: #94a3b8; }
+
+        .right-panel { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; position: relative; }
+        .login-box { width: 100%; max-width: 360px; }
+        
+        .icon-top { width: 55px; height: 55px; background: var(--teal-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--teal); margin: 0 auto 12px; position: relative; }
+        .icon-top .lock-badge { position: absolute; bottom: -2px; right: -2px; background: var(--teal); color: var(--white); width: 18px; height: 18px; border-radius: 50%; font-size: 0.55rem; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--white); }
+        
+        .login-title { text-align: center; font-size: 1.5rem; color: var(--navy); font-weight: 800; margin-bottom: 2px; }
+        .login-sub { text-align: center; font-size: 0.8rem; color: var(--muted); margin-bottom: 20px; }
+        .login-sub::after { content: ''; display: block; width: 30px; height: 3px; background: var(--teal); margin: 10px auto 0; border-radius: 2px; }
+        
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; color: var(--navy); }
+        .input-wrap { position: relative; }
+        .input-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 0.85rem;}
+        .input-wrap input { width: 100%; padding: 10px 14px 10px 36px; border: 1.5px solid var(--border); border-radius: 6px; font-family: var(--font); font-size: 0.85rem; outline: none; transition: var(--ease); color: var(--text); }
+        .input-wrap input:focus { border-color: var(--teal); }
+        .input-wrap .eye-icon { left: auto; right: 14px; cursor: pointer; }
+        
+        .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; font-size: 0.75rem; }
+        .remember { display: flex; align-items: center; gap: 6px; color: var(--text); font-weight: 500; cursor: pointer; }
+        .remember input { accent-color: var(--teal); width: 14px; height: 14px; }
+        .forgot { color: var(--teal); font-weight: 600; text-decoration: none; }
+        
+        .submit-btn { width: 100%; padding: 12px; background: var(--teal); color: var(--white); border: none; border-radius: 6px; font-family: var(--font); font-size: 0.9rem; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: var(--ease); }
+        .submit-btn:hover { background: #359f8c; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(66, 184, 164, 0.2); }
+        
+        .divider { display: flex; align-items: center; text-align: center; margin: 18px 0; color: var(--muted); font-size: 0.75rem; font-weight: 500; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1.5px solid var(--border); }
+        .divider:not(:empty)::before { margin-right: 12px; }
+        .divider:not(:empty)::after { margin-left: 12px; }
+        
+        .info-box { background: var(--teal-light); border-radius: 6px; padding: 12px 15px; display: flex; align-items: center; gap: 12px; font-size: 0.75rem; color: var(--navy); font-weight: 500; }
+        .info-box i { color: var(--teal); font-size: 1.1rem; }
+        
+        .back-btn { position: absolute; top: 20px; right: 20px; color: var(--muted); font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 6px; text-decoration: none; transition: var(--ease); }
+        .back-btn:hover { color: var(--navy); }
+        
+                        @media(max-width: 900px) {
+            body { padding: 10px; overflow: auto; height: auto; }
+            .login-container { flex-direction: column; height: auto; max-height: none; }
+            .left-panel { flex: none; width: 100%; min-height: auto; padding: 20px 20px 10px; text-align: center; }
+            .right-panel { flex: none; width: 100%; min-height: auto; padding: 10px 20px 30px; }
+            .back-btn { position: relative; top: 0; right: 0; justify-content: center; margin-bottom: 15px; }
+            
+            /* Compress Left Panel for mobile */
+            .welcome-title { font-size: 1.8rem; margin-bottom: 0; }
+            .welcome-sub { font-size: 0.9rem; margin-bottom: 5px; }
+            .welcome-desc, .shoe-img, .features { display: none !important; } /* Hide massive marketing elements */
+            .logo-img { max-height: 40px; margin-bottom: 10px; }
+            
+            /* Compress Login Box */
+            .login-box { padding: 20px 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+            .icon-top { width: 50px; height: 50px; font-size: 1.2rem; margin-bottom: 15px; }
+            .login-title { font-size: 1.3rem; }
+            .submit-btn { padding: 10px; }
+        }
+    </style>
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
+</head>
+<body>
+    <div class="login-container">
+        <div class="left-panel">
+        <a href="index.html"><img src="assets/images/logo.png" alt="Logo" class="logo-img"></a>
+        <div class="welcome-sub">Welcome Back,</div>
+        <h1 class="welcome-title">Shop Attendant!</h1>
+        <p class="welcome-desc">Access the sales system to serve customers and record payments effortlessly.</p>
+        
+        <img src="assets/images/hero-shoe.png" alt="Shoe" class="shoe-img">
+        
+        <div class="features">
+            <div class="feat-item">
+                <i class="fa-solid fa-cart-shopping feat-icon"></i>
+                <div class="feat-text">
+                    <h4>Record Sales</h4>
+                    <p>Add items, calculate totals and complete sales quickly.</p>
+                </div>
+            </div>
+            <div class="feat-item">
+                <i class="fa-solid fa-mobile-screen-button feat-icon"></i>
+                <div class="feat-text">
+                    <h4>Multiple Payment Options</h4>
+                    <p>Accept cash or mobile money payments with ease.</p>
+                </div>
+            </div>
+            <div class="feat-item">
+                <i class="fa-solid fa-file-invoice feat-icon"></i>
+                <div class="feat-text">
+                    <h4>Instant Receipts</h4>
+                    <p>Generate and print receipts for every sale.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="right-panel">
+        <a href="login.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back</a>
+        <div class="login-box">
+            <div class="icon-top">
+                <i class="fa-regular fa-user"></i>
+                <div class="lock-badge"><i class="fa-solid fa-lock"></i></div>
+            </div>
+            <h2 class="login-title">Shop Attendant Login</h2>
+            <p class="login-sub">Sign in to start recording sales and serve your customers.</p>
+            
+            <form id="loginForm" onsubmit="submitLogin(event); return false;">
+                <input type="hidden" name="action" value="login">
+                <input type="hidden" name="role" value="attendant">
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrap">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" name="username" id="username" placeholder="Enter your username" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="password" id="password" placeholder="Enter your password" required>
+                        <i class="fa-regular fa-eye eye-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" checked> Remember me
+                    </label>
+                    <a href="#" class="forgot">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="submit-btn"><i class="fa-solid fa-lock"></i> Log In as Attendant</button>
+            </form>
+            
+            <script>
+                function submitLogin(e) {
+                    e.preventDefault();
+                    const formData = new FormData(document.getElementById('loginForm'));
+                    fetch('database/auth.php', { method: 'POST', body: formData })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            if (data.data.must_change_password === 1) {
+                                window.location.href = 'dashboard.html?role=' + data.data.role + '&force_pw=1';
+                            } else {
+                                window.location.href = 'dashboard.html?role=' + data.data.role;
+                            }
+                        } else {
+                            alert(data.message);
+                        }
+                    });
+                }
+            </script>
+            
+            <div class="divider"><i class="fa-regular fa-circle-check" style="color:var(--teal); margin-right:6px;"></i> Secure & Simple</div>
+            
+            <div class="info-box">
+                <i class="fa-regular fa-circle-check"></i>
+                <div>Focused Access<br>You can only record sales and process payments.</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+

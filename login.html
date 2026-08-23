@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Linchking Stores</title>
+    <meta name="description" content="Login to Linchking Stores management system - Admin or Shop Attendant access.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --teal:       #1a9e96;
+            --teal-dark:  #14827b;
+            --teal-light: #e6f9f8;
+            --teal-mid:   #c8f0ee;
+            --navy:       #0d1b2a;
+            --white:      #ffffff;
+            --off-white:  #f4f8f8;
+            --text:       #1e293b;
+            --muted:      #64748b;
+            --border:     #e2e8f0;
+            --gold:       #e6a817;
+            --gold-light: #fdf3dd;
+            --font:       'Poppins', sans-serif;
+            --ease:       all 0.28s ease;
+            --radius:     14px;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font);
+            background: var(--off-white);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--ease); }
+
+        /* ===================== NAVBAR ===================== */
+        .navbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo img {
+            height: 46px;
+            width: auto;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+        }
+        .nav-links a {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text);
+            position: relative;
+            padding-bottom: 4px;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 2.5px;
+            background: var(--teal);
+            border-radius: 2px;
+            transition: var(--ease);
+        }
+        .nav-links a:hover { color: var(--teal); }
+        .nav-links a:hover::after,
+        .nav-links a.active::after { width: 100%; }
+        .nav-links a.active { color: var(--teal); }
+
+        .nav-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--border);
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: 50px;
+            border: 1.5px solid var(--border);
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--text);
+            background: var(--white);
+            transition: var(--ease);
+            cursor: pointer;
+        }
+        .back-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+            background: var(--teal-light);
+            transform: translateX(-3px);
+        }
+        .back-btn i {
+            font-size: 0.85rem;
+        }
+        .help-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1.5px solid var(--border);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: var(--ease);
+        }
+        .help-btn i {
+            width: 26px; height: 26px;
+            background: var(--teal-light);
+            color: var(--teal);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+        }
+        .help-btn:hover {
+            border-color: var(--teal);
+            color: var(--teal);
+            background: var(--teal-light);
+        }
+
+        /* ===================== MAIN ===================== */
+        .main {
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 0 32px;
+            gap: 0;
+            flex: 1;
+        }
+
+        /* ---- LEFT PANEL ---- */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px 40px 20px 0;
+            position: relative;
+        }
+
+        /* Background blobs */
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -40px;
+            transform: translateY(-50%);
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, var(--teal-mid) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            bottom: 60px;
+            right: 60px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--teal-mid) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        .left-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .left-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--teal);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .left-label::before {
+            content: '';
+            width: 30px;
+            height: 2px;
+            background: var(--teal);
+        }
+
+        .left-panel h1 {
+            font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+            font-weight: 900;
+            line-height: 1.1;
+            color: var(--navy);
+            margin-bottom: 12px;
+        }
+        .left-panel h1 span { color: var(--teal); }
+
+        .left-panel p {
+            font-size: 0.92rem;
+            color: var(--muted);
+            font-weight: 500;
+            line-height: 1.6;
+            max-width: 380px;
+            margin-bottom: 20px;
+        }
+
+        /* Shoe Image - positioned as focal point */
+        .shoe-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-top: 0;
+        }
+
+        /* Big teal ellipse blob behind shoe */
+        .shoe-blob {
+            position: absolute;
+            bottom: -20px;
+            left: -10px;
+            width: 340px;
+            height: 180px;
+            background: linear-gradient(135deg, var(--teal-mid) 0%, var(--teal-light) 100%);
+            border-radius: 50%;
+            z-index: 0;
+            transform: rotate(-8deg);
+        }
+
+        .hero-shoe {
+            position: relative;
+            z-index: 2;
+            width: 360px;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 20px 32px rgba(0,0,0,0.22));
+            transform: rotate(-5deg) translateY(-10px);
+            animation: shoeFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes shoeFloat {
+            0%, 100% { transform: rotate(-5deg) translateY(-10px); }
+            50%       { transform: rotate(-5deg) translateY(-24px); }
+        }
+
+        /* ---- RIGHT PANEL ---- */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px 0 20px 50px;
+        }
+
+        .portal-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .portal-title h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+        .portal-title p {
+            font-size: 0.88rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        /* Login cards row */
+        .login-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .login-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 22px 20px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: var(--ease);
+            cursor: pointer;
+        }
+        .login-card:hover {
+            border-color: var(--teal);
+            box-shadow: 0 12px 36px rgba(26,158,150,0.12);
+            transform: translateY(-4px);
+        }
+
+        /* Card icon circles */
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 1.5rem;
+        }
+        .card-icon.gold-icon {
+            background: radial-gradient(circle, var(--gold-light) 0%, #fde9a2 100%);
+            color: var(--gold);
+        }
+        .card-icon.teal-icon {
+            background: radial-gradient(circle, var(--teal-light) 0%, var(--teal-mid) 100%);
+            color: var(--teal);
+        }
+
+        .login-card h3 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        /* Underline accent below title */
+        .card-divider {
+            width: 36px;
+            height: 2.5px;
+            background: var(--gold);
+            border-radius: 2px;
+            margin: 0 auto 16px;
+        }
+        .login-card:nth-child(2) .card-divider { background: var(--teal); }
+
+        .login-card p {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 18px;
+            min-height: 50px;
+        }
+
+        /* Login buttons inside cards */
+        .card-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-weight: 700;
+            font-size: 0.88rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--ease);
+        }
+        .card-btn.admin-btn {
+            background: var(--navy);
+            color: var(--white);
+        }
+        .card-btn.admin-btn:hover {
+            background: #192540;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(13,27,42,0.25);
+        }
+        .card-btn.attendant-btn {
+            background: var(--teal);
+            color: var(--white);
+        }
+        .card-btn.attendant-btn:hover {
+            background: var(--teal-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26,158,150,0.3);
+        }
+
+        /* ---- Features Row ---- */
+        .features-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .feat-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .feat-ico {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .feat-ico.shield-ico { background: #eef2ff; color: #6366f1; }
+        .feat-ico.tag-ico    { background: var(--gold-light); color: var(--gold); }
+        .feat-ico.chart-ico  { background: #ecfdf5; color: #10b981; }
+
+        .feat-text h4 { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+        .feat-text p  { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+        /* ===================== MINI FOOTER ===================== */
+        .mini-footer {
+            background: var(--navy);
+            color: #94a3b8;
+            font-size: 0.88rem;
+        }
+        .mini-footer-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mini-footer a { color: #94a3b8; }
+        .mini-footer a:hover { color: var(--teal); }
+        .footer-heart { color: var(--gold); margin-left: 6px; }
+
+        /* ===================== MODAL FORMS ===================== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(13,27,42,0.55);
+            backdrop-filter: blur(4px);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 44px 40px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.2);
+            animation: slideUp 0.35s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 18px; right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--ease);
+        }
+        .modal-close:hover { color: var(--navy); transform: rotate(90deg); }
+
+        .modal-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.7rem;
+            margin: 0 auto 20px;
+        }
+        .modal-icon.admin-icon { background: var(--gold-light); color: var(--gold); }
+        .modal-icon.att-icon   { background: var(--teal-light); color: var(--teal); }
+
+        .modal h3 {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 6px;
+        }
+        .modal .modal-sub {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 7px;
+        }
+        .input-wrap {
+            position: relative;
+        }
+        .input-wrap i {
+            position: absolute;
+            left: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        .input-wrap input {
+            width: 100%;
+            padding: 13px 14px 13px 40px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            font-family: var(--font);
+            font-size: 0.93rem;
+            color: var(--text);
+            outline: none;
+            transition: var(--ease);
+        }
+        .input-wrap input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,158,150,0.1); }
+
+        .modal-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--ease);
+            margin-top: 8px;
+        }
+        .modal-submit.admin-submit {
+            background: var(--navy);
+            color: var(--white);
+        }
+        .modal-submit.admin-submit:hover { background: #192540; transform: translateY(-2px); }
+        .modal-submit.att-submit {
+            background: var(--teal);
+            color: var(--white);
+        }
+        .modal-submit.att-submit:hover { background: var(--teal-dark); transform: translateY(-2px); }
+
+        .modal-back {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+            font-size: 0.87rem;
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--ease);
+        }
+        .modal-back:hover { color: var(--teal); }
+
+        /* ===================== RESPONSIVE ===================== */
+        @media (max-width: 900px) {
+            .main { flex-direction: column; padding: 0 20px; }
+            .left-panel  { padding: 50px 0 20px; }
+            .right-panel { padding: 20px 0 50px; }
+            .left-panel::before, .left-panel::after { display: none; }
+            .shoe-blob   { width: 280px; height: 160px; }
+            .hero-shoe   { width: 300px; }
+        }
+                        @media (max-width: 560px) {
+            .login-cards { grid-template-columns: 1fr; gap: 12px; }
+            .nav-links, .nav-divider, .features-row { display: none; }
+            .modal { padding: 34px 24px; }
+            
+            /* Navbar compression */
+            .nav-inner { padding: 10px 15px; }
+            .nav-logo img { height: 35px !important; }
+            .back-btn, .help-btn { padding: 6px 12px; font-size: 0.75rem; }
+            
+            /* Compress Left Panel (Hide unnecessary marketing fluff on mobile) */
+            .left-panel { padding: 15px 0 5px; text-align: center; }
+            .left-label { font-size: 0.7rem; margin-bottom: 5px; }
+            .left-content h1 { font-size: 1.5rem; margin-bottom: 0; }
+            .left-content p { display: none; } /* Hide long description */
+            .shoe-wrap { display: none !important; } /* Hide giant shoe to save vertical space */
+            
+            /* Pull up the Login Portal */
+            .right-panel { padding: 10px 0 20px; }
+            .portal-title h2 { font-size: 1.3rem; margin-bottom: 2px; }
+            .portal-title p { margin-bottom: 15px; font-size: 0.85rem; }
+            
+            /* Make login cards super compact */
+            .login-card { padding: 15px; }
+            .card-icon { width: 40px; height: 40px; font-size: 1.1rem; margin-bottom: 10px; }
+            .login-card h3 { font-size: 1.1rem; margin-bottom: 10px; }
+            .card-divider, .login-card p { display: none; } /* Hide descriptions */
+            .card-btn { padding: 10px; font-size: 0.9rem; }
+        }
+    </style>
+    <link rel="icon" href="assets/images/favicon.jpg" type="image/jpeg">
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logo.png" alt="Linchking Stores">
+            </a>
+
+            <div style="display:flex; align-items:center; gap:16px;">
+                <a href="index.html" class="back-btn" id="back-home-btn">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Home
+                </a>
+                <a href="#" class="help-btn" id="help-btn">
+                    <i class="fa-regular fa-circle-question"></i>
+                    Help
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main">
+
+        <!-- LEFT: Hero + Shoe -->
+        <div class="left-panel">
+            <div class="left-content">
+                <p class="left-label">WELCOME TO LINCHKING STORES</p>
+                <h1>
+                    Manage Your Shoe<br>
+                    Business <span>With Ease</span>
+                </h1>
+                <p>Track stock, manage sales, monitor profits<br>and grow your business efficiently.</p>
+
+                <div class="shoe-wrap">
+                    <div class="shoe-blob"></div>
+                    <img src="assets/images/hero-shoe.png" alt="Premium Sneaker" class="hero-shoe" id="login-shoe">
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Login Portal -->
+        <div class="right-panel">
+            <div class="portal-title">
+                <h2>Access Your Account</h2>
+                <p>Choose your login portal to continue</p>
+            </div>
+
+            <!-- Two Login Cards -->
+            <div class="login-cards">
+
+                <!-- Admin Card -->
+                <div class="login-card" id="admin-card">
+                    <div class="card-icon gold-icon">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3>Admin Login</h3>
+                    <div class="card-divider"></div>
+                    <p>Access full system features, manage stock, sales, reports and system users.</p>
+                    <a href="admin-login.html" class="card-btn admin-btn" id="open-admin-modal">
+                        <i class="fa-solid fa-lock"></i> Login as Admin
+                    </a>
+                </div>
+
+                <!-- Attendant Card -->
+                <div class="login-card" id="attendant-card">
+                    <div class="card-icon teal-icon">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                    <h3>Shop Attendant Login</h3>
+                    <div class="card-divider"></div>
+                    <p>Record sales, view available stock and serve customers efficiently.</p>
+                    <a href="attendant-login.html" class="card-btn attendant-btn" id="open-attendant-modal">
+                        <i class="fa-solid fa-lock"></i> Login as Attendant
+                    </a>
+                </div>
+            </div>
+
+            <!-- Feature badges -->
+            <div class="features-row">
+                <div class="feat-item">
+                    <div class="feat-ico shield-ico"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="feat-text">
+                        <h4>Secure<br>&amp; Reliable</h4>
+                        <p>Your data is safe with us.</p>
+                    </div>
+                </div>
+                <div class="feat-item">
+                    <div class="feat-ico tag-ico"><i class="fa-solid fa-tag"></i></div>
+                    <div class="feat-text">
+                        <h4>Accurate<br>Inventory</h4>
+                        <p>Real-time stock updates.</p>
+                    </div>
+                </div>
+                <div class="feat-item">
+                    <div class="feat-ico chart-ico"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="feat-text">
+                        <h4>Better<br>Business</h4>
+                        <p>Make smarter decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MINI FOOTER ===== -->
+    <footer class="mini-footer">
+        <div class="mini-footer-inner">
+            <span>© 2024 Linchking Stores. All rights reserved.</span>
+            <span>Comfort In Every Step <i class="fa-solid fa-heart footer-heart"></i></span>
+        </div>
+    </footer>
+
+</body>
+</html>
+
+
+

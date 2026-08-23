@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linchking Stores - Comfort In Every Step</title>
+    <meta name="description" content="Linchking Stores - Quality shoes for every lifestyle. Step into style, comfort and confidence with Linchking Stores.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" href="assets/images/favicon.jpg" type="image/jpeg">
+</head>
+<body>
+
+    <!-- ===== PAGE CARD WRAPPER (raised card effect) ===== -->
+    <div class="page-card">
+
+    <header class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <img src="assets/images/logo.png" alt="Linchking Stores Logo" class="brand-logo">
+            </div>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="#" class="active" onclick="showView('home'); return false;" id="nav-home">Home</a>
+                <a href="#" onclick="showView('products'); return false;" id="nav-products">Products</a>
+                <a href="#" onclick="showView('about'); return false;" id="nav-about">About Us</a>
+                <a href="#" onclick="showView('contact'); return false;" id="nav-contact">Contact Us</a>
+            </nav>
+
+            <div class="nav-actions" id="navActions">
+                <a href="login.html" class="btn btn-primary" id="login-btn"><i class="fa-solid fa-lock"></i> Login</a>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== MAIN VIEWS WRAPPER ===== -->
+    <main id="main-content">
+    
+    <!-- =========================================
+         HOME VIEW 
+    ========================================= -->
+    <div id="home-view" class="view-section active-view">
+    
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="home">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <p class="hero-label"><span class="label-line"></span> WELCOME TO LINCHKING STORES</p>
+                <h1 class="hero-title">
+                    Comfort In<br>
+                    <span class="teal">Every</span> Step
+                </h1>
+                <p class="hero-text">
+                    Quality shoes for every lifestyle.<br>
+                    Step into style, comfort and confidence<br>
+                    with Linchking Stores.
+                </p>
+                
+                <!-- Mobile Trust Badge -->
+                <div class="hero-trust-badge">
+                    <div class="trust-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <span>Trusted by 5k+ Kenyans</span>
+                </div>
+
+                <div class="hero-btns">
+                    <a href="#" onclick="showView('products'); return false;" class="btn btn-primary btn-hero" id="shop-btn">
+                        <i class="fa-solid fa-bag-shopping"></i> Shop Our Collection
+                    </a>
+                    <a href="#" onclick="showView('contact'); return false;" class="btn btn-outline btn-hero" id="contact-btn">
+                        <i class="fa-solid fa-phone"></i> Contact Us
+                    </a>
+                </div>
+            </div>
+            <div class="hero-img-wrap">
+                <img src="assets/images/hero_nike_green.png" alt="Linchking Sneakers" class="hero-shoe" id="hero-shoe-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES BAR ===== -->
+
+    <section class="features-bar">
+        <div class="container features-grid">
+            <div class="feature-item">
+                <div class="feat-icon"><i class="fa-solid fa-medal"></i></div>
+                <div class="feat-text">
+                    <h3>Premium Quality</h3>
+                    <p>Carefully selected shoes for maximum comfort and durability.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feat-icon"><i class="fa-solid fa-fire"></i></div>
+                <div class="feat-text">
+                    <h3>Trendy Styles</h3>
+                    <p>Stay ahead with the latest and most stylish collections.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="feat-text">
+                    <h3>Trusted Store</h3>
+                    <p>Your trusted footwear store with excellent customer service.</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feat-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="feat-text">
+                    <h3>Convenient Location</h3>
+                    <p>Visit us at Mfangano Trade Centre, Shop F36.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== POPULAR PICKS ===== -->
+    <section class="products section-pad" id="products">
+        <div class="container">
+            <div class="sec-title">
+                <span class="sec-sub">FEATURED COLLECTION</span>
+                <h2>Our <span class="teal">Popular</span> Picks</h2>
+            </div>
+
+            <div class="products-grid" id="home-dynamic-grid">
+                <!-- Shoes fetched dynamically -->
+            </div>
+
+            <div class="view-all-wrap">
+                <a href="#" class="btn btn-outline" id="view-all-btn" onclick="showView('products'); return false;">View All Products <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+    
+    </div> <!-- /#home-view -->
+
+    <!-- =========================================
+         ABOUT VIEW (SPA Tab)
+    ========================================= -->
+    <div id="about-view" class="view-section" style="display: none;">
+
+    <!-- ===== WHY CHOOSE US ===== -->
+    <section class="why section-pad" id="about">
+        <div class="container">
+            <div class="why-inner">
+                <div class="why-img">
+                    <img src="assets/images/store-interior.jpg" alt="Linchking Store Interior">
+                </div>
+                <div class="why-content">
+                    <p class="sec-sub left-sub">WHY CHOOSE US</p>
+                    <h2>Why Customers <span class="teal">Love</span> Us</h2>
+                    <p class="why-desc">We are committed to providing the best footwear shopping experience.</p>
+                    <ul class="why-list">
+                        <li><i class="fa-solid fa-circle-check"></i> Wide range of quality shoes</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Affordable prices</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Friendly &amp; helpful service</li>
+                        <li><i class="fa-solid fa-circle-check"></i> Easy and convenient shopping</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section class="testimonials section-pad">
+        <div class="container">
+            <div class="testi-header">
+                <span class="sec-sub center-sub">WHAT OUR CUSTOMERS SAY</span>
+                <div class="slider-controls">
+                    <button class="slider-btn" id="prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="slider-btn" id="next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div class="testi-grid">
+                <div class="testi-card">
+                    <i class="fa-solid fa-quote-left testi-quote"></i>
+                    <p class="testi-text">Great quality shoes and amazing customer service. Linchking Stores is my go-to shoe shop!</p>
+                    <div class="testi-foot">
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <span class="testi-author">– Brian Otieno</span>
+                    </div>
+                </div>
+                <div class="testi-card">
+                    <i class="fa-solid fa-quote-left testi-quote"></i>
+                    <p class="testi-text">I love the variety and the comfort. Their shoes are original and very durable.</p>
+                    <div class="testi-foot">
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <span class="testi-author">– Mercy Achieng</span>
+                    </div>
+                </div>
+                <div class="testi-card">
+                    <i class="fa-solid fa-quote-left testi-quote"></i>
+                    <p class="testi-text">Best shoe store in town! Friendly staff and the best prices.</p>
+                    <div class="testi-foot">
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <span class="testi-author">– David Maina</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    </div> <!-- /#about-view -->
+
+    <!-- =========================================
+         PRODUCTS VIEW (SPA Tab)
+    ========================================= -->
+    <div id="products-view" class="view-section" style="display: none;">
+        
+        <!-- Products Banner -->
+        <section class="products-hero">
+            <div class="container prod-hero-inner">
+                <div class="prod-hero-text">
+                    <h1>Our <span class="teal">Products</span></h1>
+                    <div class="prod-hero-line"></div>
+                    <p>Explore our wide range of quality shoes.<br>Style, comfort and durability in every step.</p>
+                </div>
+                <div class="prod-hero-image">
+                    <img src="assets/images/products-banner.jpg" alt="Our Products">
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Main Area -->
+        <section class="products-main section-pad">
+            <div class="container products-layout">
+                
+                <!-- Sidebar Filters -->
+                <aside class="products-sidebar">
+                    <div class="filter-group">
+                        <h3><i class="fa-solid fa-layer-group"></i> Categories</h3>
+                        <ul class="filter-list" id="dynamic-categories">
+                            <li class="active" data-cat="all"><span>All Shoes</span> <span class="count" id="count-all-cat">0</span></li>
+                            <!-- Dynamic categories will be injected here -->
+                        </ul>
+                    </div>
+
+                    <div class="filter-group">
+                        <h3><i class="fa-solid fa-tags"></i> Brands</h3>
+                        <div class="checkbox-group" id="dynamic-brands">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" checked value="all" class="brand-filter">
+                                <span class="checkmark"></span>
+                                <span class="cb-label">All Brands</span>
+                                <span class="count" id="count-all-brand">0</span>
+                            </label>
+                            <!-- Dynamic brands will be injected here -->
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <h3>Price Range</h3>
+                        <div class="range-slider">
+                            <div class="slider-track"></div>
+                            <input type="range" min="1" max="15000" value="1" id="slider-1">
+                            <input type="range" min="1" max="15000" value="15000" id="slider-2">
+                        </div>
+                        <div class="range-values">
+                            <span id="price-min-display">KSh 1</span>
+                            <span id="price-max-display">KSh 15,000</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Product Grid Area -->
+                <div class="products-content">
+                    <div class="products-topbar">
+                        <p class="results-count" id="results-count-display"><span class="icon"><i class="fa-solid fa-shoe-prints"></i></span> Showing 0 products</p>
+                        <div class="topbar-actions">
+                            <div class="sort-by">
+                                <label for="sort">Sort by:</label>
+                                <select id="sort">
+                                    <option>Newest</option>
+                                    <option>Price: Low to High</option>
+                                    <option>Price: High to Low</option>
+                                </select>
+                            </div>
+                            <div class="view-toggles">
+                                <button class="view-btn-toggle active"><i class="fa-solid fa-table-cells-large"></i></button>
+                                <button class="view-btn-toggle"><i class="fa-solid fa-list-ul"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="products-grid products-page-grid" id="products-dynamic-grid">
+                        <!-- Shoes fetched dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div> <!-- /#products-view -->
+    
+    <!-- =========================================
+         CONTACT VIEW 
+    ========================================= -->
+    <div id="contact-view" class="view-section" style="display: none;">
+        <!-- HERO SECTION -->
+        <section class="contact-hero">
+            <div class="hero-visual">
+                <img src="assets/images/hero-shoe.png" alt="Hero Shoe" class="hero-shoe">
+            </div>
+            <div class="hero-text">
+                <h1>Contact <span style="color: var(--teal)">Us</span></h1>
+                <div class="hero-divider"></div>
+                <p>We're here to help! Reach out to us for any inquiries, support or feedback. Your satisfaction is our priority.</p>
+            </div>
+        </section>
+
+        <!-- MAIN CARDS -->
+        <div class="contact-main-container">
+            <!-- Info Card -->
+            <div class="info-card">
+                <h3 class="card-title">Get <span style="color: var(--teal)">In Touch</span></h3>
+                <ul class="info-list">
+                    <li>
+                        <div class="icon-box"><i class="fa-solid fa-phone"></i></div>
+                        <div class="info-text">0727 642 806<br>0793 530 245</div>
+                    </li>
+                    <li>
+                        <div class="icon-box"><i class="fa-brands fa-instagram"></i></div>
+                        <div class="info-text">Linchking_official</div>
+                    </li>
+                    <li>
+                        <div class="icon-box"><i class="fa-brands fa-tiktok"></i></div>
+                        <div class="info-text">Linchkingstores_official</div>
+                    </li>
+                    <li>
+                        <div class="icon-box"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="info-text">Mfangano Trade Centre<br>Shop F36</div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Form Card -->
+            <div class="form-card">
+                <div class="form-content">
+                    <h3 class="card-title">Send Us a <span style="color: var(--teal)">Message</span></h3>
+                    <form action="#" method="POST">
+                        <div class="contact-form-grid">
+                            <div class="contact-input-group">
+                                <i class="fa-regular fa-user"></i>
+                                <input type="text" placeholder="Your Name" required>
+                            </div>
+                            <div class="contact-input-group">
+                                <i class="fa-regular fa-envelope"></i>
+                                <input type="email" placeholder="Your Email" required>
+                            </div>
+                            <div class="contact-input-group">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="text" placeholder="Phone Number">
+                            </div>
+                            <div class="contact-input-group">
+                                <i class="fa-solid fa-tag"></i>
+                                <input type="text" placeholder="Subject">
+                            </div>
+                        </div>
+                        
+                        <div class="contact-input-group" style="margin-bottom: 25px;">
+                            <i class="fa-regular fa-message"></i>
+                            <textarea placeholder="Your Message" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="contact-send-btn">
+                            <i class="fa-regular fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="illustration-area">
+                    <div class="illustration-bg"></div>
+                    <div class="envelope-container">
+                        <div class="letter-card">
+                            <p>We will get back to you as soon as possible.</p>
+                            <i class="fa-solid fa-headphones-simple"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /#contact-view -->
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer" id="contact-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <img src="assets/images/logo.png" alt="Linchking Stores" class="footer-logo-img">
+                    <p>Step into comfort, quality and style.<br>Thank you for choosing Linchking Stores.</p>
+                    <div class="social-row">
+                        <a href="#" class="social-link" id="instagram-link"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="social-link" id="tiktok-link"><i class="fa-brands fa-tiktok"></i></a>
+                        <a href="#" class="social-link" id="whatsapp-link"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4>QUICK LINKS</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Products</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>CONTACT US</h4>
+                    <ul class="contact-list">
+                        <li><i class="fa-solid fa-phone"></i><span>0727 642 806<br>0793 530 245</span></li>
+                        <li><i class="fa-brands fa-instagram"></i><span>Linchking_official</span></li>
+                        <li><i class="fa-brands fa-tiktok"></i><span>Linchkingstores_official</span></li>
+                        <li><i class="fa-solid fa-location-dot"></i><span>Mfangano Trade Centre,<br>Shop F36</span></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>NEWSLETTER</h4>
+                    <p class="newsletter-desc">Subscribe for updates on new arrivals and special offers.</p>
+                    <form class="newsletter-form" id="newsletter-form">
+                        <div class="email-input-wrap">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" placeholder="Enter your email" id="newsletter-email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="subscribe-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2024 Linchking Stores. All rights reserved.</p>
+                <p>Comfort In Every Step <i class="fa-solid fa-heart teal-heart"></i></p>
+            </div>
+        </div>
+    </footer>
+    
+    
+    <!-- Cart Panel -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-panel" id="cart-panel">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button class="close-cart" onclick="toggleCart()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items-container"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-price">KSh 0</span>
+            </div>
+            <button class="btn btn-primary" onclick="checkoutCartViaWhatsApp()" style="width: 100%; margin-top: 15px;">
+                <i class="fa-brands fa-whatsapp"></i> Checkout via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    </div><!-- /.page-card -->
+
+    <script>
+        // SPA Tab Switching Logic
+        function showView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.style.display = 'none';
+            });
+            // Show target view
+            document.getElementById(viewId + '-view').style.display = 'block';
+            
+            // Update nav active states
+            document.querySelectorAll('.nav-links a').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            let activeLink = document.getElementById('nav-' + viewId);
+            if (activeLink) activeLink.classList.add('active');
+            
+            // Close mobile menu after selecting a tab
+            const navLinks = document.getElementById('navLinks');
+            const navActions = document.getElementById('navActions');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            if (navLinks) navLinks.classList.remove('mobile-open');
+            if (navActions) navActions.classList.remove('mobile-open');
+            if (mobileMenuBtn) mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
+
+
