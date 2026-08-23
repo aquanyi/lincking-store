@@ -365,7 +365,7 @@ function createItemCard(item) {
 
     return `
         <div class="product-card" style="display:flex; flex-direction:column; justify-content:space-between; padding:20px; border:1px solid #e2e8f0; border-radius:16px; background:#fff; transition:all 0.3s ease; box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-            <div class="product-img" style="position:relative; height:240px; background:#f8fafc; border-radius:12px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <div class="product-img" onclick="openImageViewer('${encodedImagesData}')" style="position:relative; height:240px; background:#f8fafc; border-radius:12px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer;">
                 <div class="prod-carousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; width:100%; height:100%;">
                     ${imagesHtml}
                 </div>
@@ -620,6 +620,7 @@ function checkoutCartViaWhatsApp() {
     
     window.open(`https://wa.me/254727642806?text=${msg}`, '_blank');
 }
+
 
 
 

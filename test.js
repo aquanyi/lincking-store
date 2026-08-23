@@ -1672,7 +1672,7 @@ function getSafeImageUrl(imgData) {
                     card.style.overflow = 'hidden';
                     card.style.background = 'var(--white)';
                     card.innerHTML = `
-                        <div class="pos-card-img" style="position:relative; height:180px; background:var(--bg); padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden;">
+                        <div class="pos-card-img" onclick="openImageViewer('${encodeURIComponent(JSON.stringify(imagesArray))}')" style="position:relative; height:180px; background:var(--bg); padding:0; display:flex; justify-content:center; align-items:center; overflow:hidden; cursor:pointer;">
                             <div class="prod-carousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; width:100%; height:100%; padding:20px 0;">
                                 ${imagesHtml}
                             </div>
@@ -1980,7 +1980,7 @@ function getSafeImageUrl(imgData) {
                     card.style.overflow = 'hidden';
                     card.style.background = 'var(--white)';
                     card.innerHTML = `
-                        <div class="pos-card-img" style="position:relative; height:180px; background:var(--bg); display:flex; justify-content:center; align-items:center; overflow:hidden;">
+                        <div class="pos-card-img" onclick="openImageViewer('${encodeURIComponent(JSON.stringify(imagesArray))}')" style="position:relative; height:180px; background:var(--bg); display:flex; justify-content:center; align-items:center; overflow:hidden; cursor:pointer;">
                             <div style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; width:100%; height:100%; padding:20px 0;">
                                 \
                             </div>
@@ -2487,5 +2487,6 @@ window.clearClientDebt = function(clientId, amount) {
         }
     });
 };
+
 
 

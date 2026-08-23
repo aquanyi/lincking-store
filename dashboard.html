@@ -1644,8 +1644,64 @@
     </div>
     <!-- END RECEIPT MODAL -->
 
+
+<!-- GLOBAL IMAGE VIEWER MODAL -->
+<div id="imageViewerModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.95); z-index:999999; flex-direction:column; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+    <button onclick="closeImageViewer()" style="position:absolute; top:20px; right:25px; background:none; border:none; color:white; font-size:36px; cursor:pointer; padding:10px; z-index:9999999;"><i class="fa-solid fa-xmark"></i></button>
+    <div id="imageViewerCarousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; width:100%; height:80vh; align-items:center;">
+        <!-- Images injected here -->
+    </div>
+    <div id="imageViewerDots" style="display:flex; gap:12px; margin-top:20px; justify-content:center;">
+        <!-- Dots injected here -->
+    </div>
+</div>
+<style>
+    #imageViewerCarousel::-webkit-scrollbar { display: none; }
+</style>
+<script>
+    function openImageViewer(encodedImagesStr) {
+        let images = [];
+        try { images = JSON.parse(decodeURIComponent(encodedImagesStr)); } catch(e) { images = [decodeURIComponent(encodedImagesStr)]; }
+        if (!Array.isArray(images) || images.length === 0) return;
+        
+        const modal = document.getElementById('imageViewerModal');
+        const carousel = document.getElementById('imageViewerCarousel');
+        const dotsContainer = document.getElementById('imageViewerDots');
+        
+        carousel.innerHTML = '';
+        dotsContainer.innerHTML = '';
+        
+        images.forEach((img, index) => {
+            const imgEl = document.createElement('img');
+            imgEl.src = img;
+            imgEl.style.cssText = 'flex:0 0 100%; scroll-snap-align:center; object-fit:contain; width:100%; height:100%; padding:20px; box-sizing:border-box; user-select:none;';
+            carousel.appendChild(imgEl);
+            
+            const dot = document.createElement('div');
+            dot.style.cssText = width:12px; height:12px; border-radius:50%; background: + (index === 0 ? 'white' : 'rgba(255,255,255,0.2)') + ; transition:0.3s;;
+            dotsContainer.appendChild(dot);
+        });
+        
+        carousel.onscroll = () => {
+            const scrollPos = carousel.scrollLeft;
+            const width = carousel.offsetWidth;
+            const activeIndex = Math.round(scrollPos / width);
+            Array.from(dotsContainer.children).forEach((dot, i) => {
+                dot.style.background = i === activeIndex ? 'white' : 'rgba(255,255,255,0.2)';
+            });
+        };
+        
+        modal.style.display = 'flex';
+    }
+    
+    function closeImageViewer() {
+        document.getElementById('imageViewerModal').style.display = 'none';
+    }
+</script>
+
 </body>
 </html>
+
 
 
 
