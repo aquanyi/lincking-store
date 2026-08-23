@@ -1981,10 +1981,10 @@ function getSafeImageUrl(imgData) {
                     card.style.background = 'var(--white)';
                     card.innerHTML = `
                         <div class="pos-card-img" onclick="openImageViewer('${encodeURIComponent(JSON.stringify(imagesArray))}')" style="position:relative; height:180px; background:var(--bg); display:flex; justify-content:center; align-items:center; overflow:hidden; cursor:pointer;">
-                            <div style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; width:100%; height:100%; padding:20px 0;">
-                                \
+                            <div class="prod-carousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; width:100%; height:100%; padding:20px 0;">
+                                ${imagesHtml}
                             </div>
-                            <div class="status-badge \" style="position:absolute; top:10px; right:10px; font-size:0.7rem; padding:3px 8px; border-radius:4px; z-index:2;">\</div>
+                            <div class="status-badge ${stockClass}" style="position:absolute; top:10px; right:10px; font-size:0.7rem; padding:3px 8px; border-radius:4px; z-index:2;">${stockText}</div>
                         </div>
                         <div class="pos-card-content" style="padding:15px;">
                             <h3 style="font-size:1rem; color:var(--navy); margin-bottom:4px; font-weight:600;">${itemName}</h3>
@@ -2489,4 +2489,64 @@ window.clearClientDebt = function(clientId, amount) {
 };
 
 
+
+
+
+// --- PROMOTIONS MANAGEMENT ---
+function loadPromotions() {
+    fetch('database/promotions.php?action=list')
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.querySelector('#promotionsTable tbody');
+            tbody.innerHTML = '';
+            if (data.status === 'success') {
+                data.data.forEach(promo => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><img src="${promo.image_url || 'assets/images/placeholder.png'}" style="height:40px; border-radius:4px;"></td>
+                        <td>${promo.promo_type}</td>
+                        <td>${promo.title}</td>
+                        <td><span class="badge ${promo.status === 'Active' ? 'badge-success' : 'badge-danger'}">${promo.status}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deletePromo(${promo.id})"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        });
+}
+
+function openAddPromoModal() {
+    document.getElementById('addPromoForm').reset();
+    document.getElementById('addPromoModal').style.display = 'flex';
+}
+
+function submitAddPromo(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    fetch('database/promotions.php', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                closeModal('addPromoModal');
+                loadPromotions();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        });
+}
+
+function deletePromo(id) {
+    if (confirm('Delete this promotion?')) {
+        const formData = new FormData();
+        formData.append('action', 'delete');
+        formData.append('id', id);
+        fetch('database/promotions.php', { method: 'POST', body: formData })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') loadPromotions();
+            });
+    }
+}
 
