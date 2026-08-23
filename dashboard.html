@@ -1662,7 +1662,7 @@
     function openImageViewer(encodedImagesStr) {
         let images = [];
         try { images = JSON.parse(decodeURIComponent(encodedImagesStr)); } catch(e) { images = [decodeURIComponent(encodedImagesStr)]; }
-        if (!Array.isArray(images) || images.length === 0) return;
+        if (typeof images === 'string') images = [images]; if (!Array.isArray(images) || images.length === 0) return;
         
         const modal = document.getElementById('imageViewerModal');
         const carousel = document.getElementById('imageViewerCarousel');
@@ -1678,7 +1678,7 @@
             carousel.appendChild(imgEl);
             
             const dot = document.createElement('div');
-            dot.style.cssText = width:12px; height:12px; border-radius:50%; background: + (index === 0 ? 'white' : 'rgba(255,255,255,0.2)') + ; transition:0.3s;;
+            dot.style.cssText = 'width:12px; height:12px; border-radius:50%; transition:0.3s; background:' + (index === 0 ? 'white' : 'rgba(255,255,255,0.2)');
             dotsContainer.appendChild(dot);
         });
         
@@ -1701,6 +1701,8 @@
 
 </body>
 </html>
+
+
 
 
 
