@@ -238,6 +238,7 @@
             <li><a href="#" class="menu-item" data-target="pos-sales-view"><i class="fa-solid fa-cart-shopping"></i> Checkout</a></li>
             <li><a href="#" class="menu-item" data-target="stock-view"><i class="fa-solid fa-box-open"></i> Stock Management</a></li>
             <li><a href="#" class="menu-item" data-target="clothes-stock-view"><i class="fa-solid fa-shirt"></i> Clothes Management</a></li>
+            <li><a href="#" class="menu-item" data-target="promotions-view"><i class="fa-solid fa-bullhorn"></i> Promotions</a></li>
             <li><a href="#" class="menu-item" data-target="sales-view"><i class="fa-solid fa-cart-shopping"></i> Sales Management</a></li>
             <li><a href="#" class="menu-item" data-target="reports-view"><i class="fa-solid fa-chart-simple"></i> Reports & Analytics</a></li>
             <li><a href="#" class="menu-item" data-target="users-view"><i class="fa-solid fa-users"></i> Users & Roles</a></li>
@@ -352,7 +353,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- MAIN WRAPPER -->
     <div class="main-wrapper">
         
         <!-- TOPBAR -->
@@ -583,6 +584,35 @@
                 </div>
             </div>
             
+            <!-- PROMOTIONS VIEW -->
+            <div id="promotions-view" class="admin-view-section admin-only" style="display: none;">
+                <div class="page-header">
+                    <div>
+                        <h1>Promotions <span>Management</span></h1>
+                        <p>Manage the mobile app banners (Mega Sale, Discounts, etc).</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddPromoModal()"><i class="fa-solid fa-plus"></i> Add Promotion</button>
+                </div>
+                <div class="panel">
+                    <div class="table-responsive">
+                        <table class="table" id="promotionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Type</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Promos go here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <div id="clothes-stock-view" class="admin-view-section admin-only" style="display: none;">
                 <div class="page-header">
                     <div><h1>Clothes <span>Management</span></h1><p>Manage your clothes inventory here.</p></div>
@@ -728,6 +758,21 @@
                             </div>
                             
                             <div class="form-group">
+                                <label class="form-label">Original Price (KSh)</label>
+                                <input type="number" name="original_price" id="original_price" class="form-input" placeholder="0.00">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Rating (0-5)</label>
+                                <input type="number" step="0.1" max="5" name="rating" id="rating" class="form-input" placeholder="e.g. 4.5">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Reviews Count</label>
+                                <input type="number" name="reviews_count" id="reviews_count" class="form-input" placeholder="e.g. 120">
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="form-label">Initial Stock Quantity</label>
                                 <input type="number" name="quantity" id="quantity" class="form-input" placeholder="0">
                             </div>
@@ -806,6 +851,21 @@
                             </div>
                             
                             <div class="form-group">
+                                <label class="form-label">Original Price (KSh)</label>
+                                <input type="number" name="original_price" id="cloth_original_price" class="form-input" placeholder="0.00">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Rating (0-5)</label>
+                                <input type="number" step="0.1" max="5" name="rating" id="cloth_rating" class="form-input" placeholder="e.g. 4.5">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Reviews Count</label>
+                                <input type="number" name="reviews_count" id="cloth_reviews_count" class="form-input" placeholder="e.g. 120">
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="form-label">Initial Stock Quantity</label>
                                 <input type="number" name="quantity" id="quantity" class="form-input" placeholder="0">
                             </div>
@@ -863,6 +923,8 @@
             </div>
             
             <div id="reports-view" class="admin-view-section admin-only" style="display: none;">
+                <style>\n    #reports-view .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }\n    #reports-view .stat-card { background: var(--white); padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 15px; flex-direction: row; }\n    #reports-view .stat-icon { width: 45px; height: 45px; border-radius: 10px; background: #f0fdfb; color: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }\n    #reports-view .stat-details h3 { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }\n    #reports-view .stat-value { font-size: 1.25rem; color: var(--navy); font-weight: 800; }\n</style>
+                
                 <div class="page-header">
                     <div><h1>Reports <span>& Analytics</span></h1><p>Deep dive into your business metrics.</p></div>
                     <div style="display:flex; gap:10px;">
@@ -871,31 +933,142 @@
                     </div>
                 </div>
                 
-                <div class="form-grid">
-                    <div class="panel">
-                        <h3 style="margin-bottom:15px;">Generate Custom Report</h3>
-                        <div class="form-group">
-                            <label class="form-label">Report Type</label>
-                            <select id="report-type" class="form-select">
-                                <option value="all">Grand Report (Shoes + Clothes)</option>
-                                <option value="shoe">Shoes Sales Only</option>
-                                <option value="cloth">Clothes Sales Only</option>
+                <div class="panel" style="margin-bottom: 20px;">
+                    <div style="display:flex; flex-wrap:wrap; gap:15px; align-items:flex-end;">
+                        <div class="form-group" style="flex:1; min-width:150px; margin:0;">
+                            <label class="form-label">Period</label>
+                            <select id="report-period" class="form-select" onchange="toggleCustomDates()">
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month" selected>This Month</option>
+                                <option value="custom">Custom Date Range</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Date Range</label>
-                            <div style="display:flex; gap:10px;">
-                                <input type="date" id="report-start" class="form-input" required>
-                                <span style="display:flex; align-items:center;">to</span>
-                                <input type="date" id="report-end" class="form-input" required>
+                        <div id="custom-date-wrapper" style="display:none; flex-wrap:wrap; gap:15px; flex:2; min-width:300px;">
+                            <div class="form-group" style="flex:1; margin:0;">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" id="report-start" class="form-input">
+                            </div>
+                            <div class="form-group" style="flex:1; margin:0;">
+                                <label class="form-label">End Date</label>
+                                <input type="date" id="report-end" class="form-input">
                             </div>
                         </div>
-                        <button class="btn-primary" style="width:100%;" onclick="generateReport()"><i class="fa-solid fa-chart-pie"></i> Generate Report</button>
+                        <div class="form-group" style="flex:1; min-width:130px; margin:0;">
+                            <label class="form-label">Item Type</label>
+                            <select id="report-type" class="form-select">
+                                <option value="all">All Items</option>
+                                <option value="shoe">Shoes Only</option>
+                                <option value="cloth">Clothes Only</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:1; min-width:130px; margin:0;">
+                            <label class="form-label">Payment</label>
+                            <select id="report-payment" class="form-select">
+                                <option value="all">All Methods</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Mobile Money">M-Pesa</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex:1; min-width:150px; margin:0;">
+                            <label class="form-label">Category</label>
+                            <select id="report-category" class="form-select">
+                                <option value="all">All Categories</option>
+                                <!-- JS will populate this -->
+                            </select>
+                        </div>
+                        <div style="flex:1; min-width:150px;">
+                            <button class="btn-primary" style="width:100%; height:42px;" onclick="generateReport()"><i class="fa-solid fa-bolt"></i> Generate</button>
+                        </div>
                     </div>
-                    <div class="panel" style="display:flex; flex-direction:column;">
-                        <h3 style="margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">Report Results</h3>
-                        <div id="report-results" style="color:var(--text-light); text-align:center; margin-top:20px;">
-                            Select your parameters and click Generate.
+                </div>
+
+                <div id="report-results" style="display:none;">
+                    <!-- Summary Cards -->
+                    <div class="stats-grid" style="margin-bottom:20px;">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+                            <div class="stat-details">
+                                <h3>Total Revenue</h3>
+                                <p class="stat-value" id="rep-total-rev">KSh 0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:#e0e7ff; color:#4f46e5;"><i class="fa-solid fa-money-bill-wave"></i></div>
+                            <div class="stat-details">
+                                <h3>Cash Revenue</h3>
+                                <p class="stat-value" id="rep-cash-rev">KSh 0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:#dcfce7; color:#16a34a;"><i class="fa-solid fa-mobile-screen"></i></div>
+                            <div class="stat-details">
+                                <h3>M-Pesa Revenue</h3>
+                                <p class="stat-value" id="rep-mpesa-rev">KSh 0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background:#fef3c7; color:#d97706;"><i class="fa-solid fa-box-open"></i></div>
+                            <div class="stat-details">
+                                <h3>Total Items Sold</h3>
+                                <p class="stat-value" id="rep-total-items">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown & Table -->
+                    <div class="form-grid">
+                        <div class="panel">
+                            <h3 style="margin-bottom:15px; font-size:1.1rem;"><i class="fa-solid fa-chart-bar" style="color:var(--teal);"></i> Sales Breakdown</h3>
+                            
+                            <div style="margin-bottom:20px;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.9rem; font-weight:600;">
+                                    <span>Cash vs M-Pesa</span>
+                                </div>
+                                <div style="width:100%; height:12px; border-radius:6px; background:#e2e8f0; display:flex; overflow:hidden;">
+                                    <div id="bar-cash" style="height:100%; background:#4f46e5; width:50%; transition:1s;"></div>
+                                    <div id="bar-mpesa" style="height:100%; background:#16a34a; width:50%; transition:1s;"></div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.8rem; color:var(--text-light);">
+                                    <span style="color:#4f46e5;"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Cash (<span id="pct-cash">50%</span>)</span>
+                                    <span style="color:#16a34a;"><i class="fa-solid fa-circle" style="font-size:8px;"></i> M-Pesa (<span id="pct-mpesa">50%</span>)</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.9rem; font-weight:600;">
+                                    <span>Shoes vs Clothes</span>
+                                </div>
+                                <div style="width:100%; height:12px; border-radius:6px; background:#e2e8f0; display:flex; overflow:hidden;">
+                                    <div id="bar-shoes" style="height:100%; background:#0d9488; width:50%; transition:1s;"></div>
+                                    <div id="bar-clothes" style="height:100%; background:#f59e0b; width:50%; transition:1s;"></div>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.8rem; color:var(--text-light);">
+                                    <span style="color:#0d9488;"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Shoes (<span id="pct-shoes">50%</span>)</span>
+                                    <span style="color:#f59e0b;"><i class="fa-solid fa-circle" style="font-size:8px;"></i> Clothes (<span id="pct-clothes">50%</span>)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel" style="grid-column: span 2;">
+                            <h3 style="margin-bottom:15px; font-size:1.1rem;"><i class="fa-solid fa-list-ul" style="color:var(--teal);"></i> Detailed Log</h3>
+                            <div style="max-height: 400px; overflow-y: auto;">
+                                <table class="data-table">
+                                    <thead style="position:sticky; top:0; background:white; z-index:1;">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Receipt</th>
+                                            <th>Item Name</th>
+                                            <th>Method</th>
+                                            <th style="text-align:center;">Qty</th>
+                                            <th style="text-align:right;">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rep-log-table">
+                                        <!-- Rows injected by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1565,6 +1738,20 @@
                 
                 <div class="form-grid">
                     <div class="form-group">
+                        <label class="form-label">Original Price (KSh)</label>
+                        <input type="number" id="edit_original_price" name="original_price" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Rating & Reviews</label>
+                        <div style="display:flex;gap:10px;">
+                            <input type="number" step="0.1" max="5" id="edit_rating" name="rating" class="form-input" placeholder="Rating (0-5)">
+                            <input type="number" id="edit_reviews_count" name="reviews_count" class="form-input" placeholder="Count">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
                         <label class="form-label">Total Quantity in Stock</label>
                         <input type="number" id="edit_quantity" name="quantity" class="form-input" required>
                     </div>
@@ -1592,6 +1779,56 @@
         </div>
     </div>
     <!-- END EDIT MODAL -->
+    
+    <!-- ADD PROMO MODAL -->
+    <div id="addPromoModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div class="panel" style="width:100%; max-width:500px; margin:20px; max-height:90vh; overflow-y:auto; background:#fff; border-radius:12px; padding:24px;">
+            <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin:0; font-size:1.25rem; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-bullhorn" style="color:var(--teal);"></i> Add Promotion Banner</h2>
+                <button type="button" onclick="closeModal('addPromoModal')" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#64748b;">&times;</button>
+            </div>
+            <form id="addPromoForm" onsubmit="submitAddPromo(event)" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="add">
+                
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label class="form-label" style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Promotion Type / Badge</label>
+                    <input type="text" name="promo_type" class="form-input" placeholder="e.g. MEGA SALE, WEEKEND DEAL" required style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label class="form-label" style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Main Title</label>
+                    <input type="text" name="title" class="form-input" placeholder="e.g. UP TO 50% OFF" required style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label class="form-label" style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Subtitle (Optional)</label>
+                    <input type="text" name="subtitle" class="form-input" placeholder="e.g. On selected sneakers" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label class="form-label" style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Banner Background Color</label>
+                    <select name="bg_color" class="form-select" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px;">
+                        <option value="#0d9488">Teal (#0d9488)</option>
+                        <option value="#0f172a">Dark Navy (#0f172a)</option>
+                        <option value="#dc2626">Red (#dc2626)</option>
+                        <option value="#d97706">Amber (#d97706)</option>
+                        <option value="#7c3aed">Purple (#7c3aed)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label class="form-label" style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Promo Graphic / Shoe Image</label>
+                    <input type="file" name="promo_image" accept="image/*" class="form-input" style="width:100%; padding:8px; border:1px solid #cbd5e1; border-radius:8px;">
+                </div>
+                
+                <div class="form-actions" style="display:flex; gap:10px; justify-content:flex-end;">
+                    <button type="button" onclick="closeModal('addPromoModal')" class="btn" style="padding:10px 18px; border:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; cursor:pointer;">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="padding:10px 20px; background:var(--teal); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;"><i class="fa-solid fa-check"></i> Save Promotion</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END ADD PROMO MODAL -->
 
     <!-- RECEIPT MODAL -->
     <div id="receiptModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); z-index:10000; justify-content:center; align-items:center;">
@@ -1701,6 +1938,7 @@
 
 </body>
 </html>
+
 
 
 

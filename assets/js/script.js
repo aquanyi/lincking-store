@@ -257,6 +257,24 @@ function initializeFilters() {
     }
 }
 
+function setProductView(viewType) {
+    const gridBtn = document.getElementById('btn-grid-view');
+    const listBtn = document.getElementById('btn-list-view');
+    const gridContainer = document.getElementById('products-dynamic-grid');
+    
+    if (!gridContainer || !gridBtn || !listBtn) return;
+    
+    if (viewType === 'list') {
+        gridContainer.classList.add('list-view');
+        listBtn.classList.add('active');
+        gridBtn.classList.remove('active');
+    } else {
+        gridContainer.classList.remove('list-view');
+        gridBtn.classList.add('active');
+        listBtn.classList.remove('active');
+    }
+}
+
 function setupSortListener() {
     const sortSelect = document.getElementById('sort');
     if (sortSelect) {
@@ -298,14 +316,45 @@ function applyFilters() {
 function createItemCard(item) {
     const itemType = item.item_type || (item.shoe_id ? 'shoe' : 'cloth');
     const itemId = item.item_id || item.shoe_id || item.cloth_id;
-    const price = parseFloat(item.selling_price).toLocaleString();
-    const hasStock = parseInt(item.quantity) > 0;
+    const itemName = (item.item_name || item.shoe_name || item.cloth_name || 'Product').replace(/"/g, '&quot;');
+    const priceNum = parseFloat(item.selling_price || 0);
+    const price = priceNum.toLocaleString();
+    const origPriceRaw = item.original_price ? parseFloat(item.original_price) : 0;
+    const origPriceStr = origPriceRaw > 0 ? origPriceRaw.toLocaleString() : '';
     
+    let discountBadgeHtml = '';
+    let origPriceHtml = '';
+    if (origPriceRaw > priceNum) {
+        const discountPerc = Math.round(((origPriceRaw - priceNum) / origPriceRaw) * 100);
+        discountBadgeHtml = `<div class="discount-badge">-${discountPerc}%</div>`;
+        origPriceHtml = `<span class="original-price">KSh ${origPriceStr}</span>`;
+    }
+    
+    const rating = parseFloat(item.rating) || 0;
+    const reviews = parseInt(item.reviews_count) || 0;
+    
+    let ratingHtml = '';
+    if (rating > 0) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            if (rating >= i) stars += '<i class="fa-solid fa-star"></i>';
+            else if (rating >= i - 0.5) stars += '<i class="fa-solid fa-star-half-stroke"></i>';
+            else stars += '<i class="fa-regular fa-star" style="color:#cbd5e1"></i>';
+        }
+        ratingHtml = `
+            <div class="prod-rating">
+                ${stars}
+                <span>(${reviews})</span>
+            </div>
+        `;
+    }
+    
+    const hasStock = parseInt(item.quantity || 0) > 0;
     let stockBadge = hasStock 
-        ? `<span class="stock-status" style="color:var(--teal); font-weight:700; font-size:0.85rem; background:rgba(66, 184, 164, 0.1); padding:4px 10px; border-radius:20px;">In Stock</span>` 
-        : `<span class="stock-status" style="color:var(--red); font-weight:700; font-size:0.85rem; background:rgba(239, 68, 68, 0.1); padding:4px 10px; border-radius:20px;">Out of Stock</span>`;
+        ? `<span class="stock-status" style="color:var(--teal); font-weight:700; font-size:0.75rem;">In Stock</span>` 
+        : `<span class="stock-status" style="color:var(--red); font-weight:700; font-size:0.75rem;">Out of Stock</span>`;
         
-    let rawSizes = item.size || item.sizes;
+    let rawSizes = item.sizes || item.size;
     let sizesArr = [];
     if (Array.isArray(rawSizes)) {
         sizesArr = rawSizes;
@@ -314,11 +363,12 @@ function createItemCard(item) {
             let parsed = JSON.parse(rawSizes); 
             sizesArr = Array.isArray(parsed) ? parsed : [rawSizes]; 
         } catch(e) { 
-            sizesArr = [rawSizes]; 
+            sizesArr = rawSizes.includes(',') ? rawSizes.split(',').map(s => s.trim()) : [rawSizes]; 
         }
     }
+    sizesArr = sizesArr.filter(s => s !== null && s !== undefined && String(s).trim() !== '');
     
-    let rawColors = item.color || item.colors;
+    let rawColors = item.colors || item.color;
     let colorsArr = [];
     if (Array.isArray(rawColors)) {
         colorsArr = rawColors;
@@ -327,73 +377,87 @@ function createItemCard(item) {
             let parsed = JSON.parse(rawColors); 
             colorsArr = Array.isArray(parsed) ? parsed : [rawColors]; 
         } catch(e) { 
-            colorsArr = [rawColors]; 
+            colorsArr = rawColors.includes(',') ? rawColors.split(',').map(c => c.trim()) : [rawColors]; 
         }
     }
+    colorsArr = colorsArr.filter(c => c !== null && c !== undefined && String(c).trim() !== '');
     
     let imgUrl = 'assets/images/hero-shoe.png';
     let imagesHtml = '';
+    let imagesArr = [];
     
     try {
-        let arr = JSON.parse(item.image || item.images);
-        if (Array.isArray(arr) && arr.length > 0) {
-            arr.forEach((img) => {
-                imagesHtml += `<img src="${img}" alt="${(item.item_name || item.shoe_name || item.cloth_name).replace(/"/g, '')}" loading="lazy" style="flex:0 0 100%; scroll-snap-align:center; object-fit:contain; width:100%; height:100%; padding:10px;" onerror="this.src='assets/images/hero-shoe.png'">`;
-            });
-        } else {
-            let i = item.image || item.images || imgUrl;
-            imagesHtml = `<img src="${i}" alt="Item" loading="lazy" style="flex:0 0 100%; scroll-snap-align:center; object-fit:contain; width:100%; height:100%; padding:10px;" onerror="this.src='assets/images/hero-shoe.png'">`;
+        let rawImg = item.images || item.image;
+        let parsed = typeof rawImg === 'string' ? JSON.parse(rawImg) : rawImg;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+            imagesArr = parsed;
+        } else if (typeof parsed === 'string' && parsed) {
+            imagesArr = [parsed];
         }
     } catch(e) {
-        let i = item.image || item.images || imgUrl;
-        imagesHtml = `<img src="${i}" alt="Item" loading="lazy" style="flex:0 0 100%; scroll-snap-align:center; object-fit:contain; width:100%; height:100%; padding:10px;" onerror="this.src='assets/images/hero-shoe.png'">`;
+        let rawImg = item.images || item.image;
+        if (typeof rawImg === 'string' && rawImg) {
+            imagesArr = [rawImg];
+        }
     }
+    if (imagesArr.length === 0) imagesArr = [imgUrl];
     
-    const selectStyle = "width:100%; padding:8px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:0.85rem; color:var(--navy); font-weight:600; outline:none; cursor:pointer; background:url('data:image/svg+xml;utf8,<svg fill=%22%23475569%22 height=%2224%22 viewBox=%220 0 24 24%22 width=%2224%22 xmlns=%22http://www.w3.org/2000/svg%22><path d=%22M7 10l5 5 5-5z%22/></svg>') no-repeat right 8px center; background-size:16px; -webkit-appearance:none; -moz-appearance:none; appearance:none;";
-
+    const encodedImagesData = encodeURIComponent(JSON.stringify(imagesArr));
+    
+    imagesArr.forEach(img => {
+        imagesHtml += `<img src="${img}" alt="${itemName}" loading="lazy" style="flex:0 0 100%; scroll-snap-align:center; object-fit:contain; width:100%; height:100%; padding:8px;" onerror="this.src='assets/images/hero-shoe.png'">`;
+    });
+    
     let sizeDropdown = '';
     if (sizesArr.length > 0) {
         let opts = sizesArr.map(s => `<option value="${s}">Size ${s}</option>`).join('');
-        sizeDropdown = `<div style="flex:1;"><select id="client-size-${itemId}" style="${selectStyle}"><option value="">Size</option>${opts}</select></div>`;
+        sizeDropdown = `<select id="client-size-${itemId}" style="width:100%; padding:6px 8px; border:1px solid #e2e8f0; border-radius:6px; font-size:0.75rem; color:var(--navy); font-weight:600; outline:none; background:#f8fafc;"><option value="">Size</option>${opts}</select>`;
     }
 
     let colorDropdown = '';
     if (colorsArr.length > 0) {
         let opts = colorsArr.map(c => `<option value="${c}">${c}</option>`).join('');
-        colorDropdown = `<div style="flex:1;"><select id="client-color-${itemId}" style="${selectStyle}"><option value="">Color</option>${opts}</select></div>`;
+        colorDropdown = `<select id="client-color-${itemId}" style="width:100%; padding:6px 8px; border:1px solid #e2e8f0; border-radius:6px; font-size:0.75rem; color:var(--navy); font-weight:600; outline:none; background:#f8fafc;"><option value="">Color</option>${opts}</select>`;
+    }
+    
+    let variantsRow = '';
+    if (sizeDropdown || colorDropdown) {
+        variantsRow = `<div style="display:flex; gap:6px; margin:8px 0; width:100%;">${sizeDropdown ? `<div style="flex:1; min-width:0;">${sizeDropdown}</div>` : ''}${colorDropdown ? `<div style="flex:1; min-width:0;">${colorDropdown}</div>` : ''}</div>`;
     }
 
     return `
-        <div class="product-card" style="display:flex; flex-direction:column; justify-content:space-between; padding:20px; border:1px solid #e2e8f0; border-radius:16px; background:#fff; transition:all 0.3s ease; box-shadow:0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-            <div class="product-img" onclick="openImageViewer('${encodedImagesData}')" style="position:relative; height:240px; background:#f8fafc; border-radius:12px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer;">
+        <div class="product-card" style="display:flex; flex-direction:column; justify-content:space-between; position:relative;">
+            ${discountBadgeHtml}
+            <div class="product-img prod-img-wrap" onclick="openImageViewer('${encodedImagesData}')" style="position:relative; background:#f8fafc; border-radius:10px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:pointer;">
                 <div class="prod-carousel" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; width:100%; height:100%;">
                     ${imagesHtml}
                 </div>
             </div>
             
-            <div class="product-details" style="flex:1;">
-                <h3 style="font-size:1.15rem; color:var(--navy); font-weight:800; margin-bottom:8px; line-height:1.3;">${item.item_name || item.shoe_name || item.cloth_name}</h3>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #e2e8f0;">
-                    <span style="font-size:0.85rem; color:#64748b; font-weight:600;">${item.brand || 'Linchking'}</span>
+            <div class="product-details" style="flex:1; display:flex; flex-direction:column;">
+                <h3 class="prod-name" style="font-size:0.88rem; color:var(--navy); font-weight:700; margin-bottom:3px; line-height:1.3; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;" title="${itemName}">${itemName}</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <span style="font-size:0.72rem; color:#64748b; font-weight:500; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:65%;">${item.brand || ''}</span>
                     ${stockBadge}
                 </div>
                 
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    ${sizeDropdown}
-                    ${colorDropdown}
+                <div style="display:flex; align-items:baseline; gap:5px; margin-bottom:4px; flex-wrap:wrap;">
+                    <span class="price" style="font-size:1rem; font-weight:800; color:#0f172a;">KSh ${price}</span>
+                    ${origPriceHtml}
                 </div>
+                
+                ${ratingHtml}
+                ${variantsRow}
             </div>
             
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span class="price" style="font-size:1.3rem; font-weight:800; color:#0f172a;">KSh ${price}</span>
-                <div style="display:flex; gap:8px;">
-                    <button class="add-to-cart-btn" onclick="addItemToCart(${itemId}, '${itemType}')" style="background:var(--teal); color:white; border:none; padding:0 15px; height:40px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-weight:600;"><i class="fa-solid fa-cart-shopping" style="margin-right:6px;"></i> Add</button>
-                    <button class="buy-now-btn" onclick="orderSingleItemViaWhatsApp(${itemId}, '${itemType}')" style="background:#0f172a; color:white; border:none; padding:0 15px; height:40px; border-radius:10px; cursor:pointer; font-weight:600; display:flex; align-items:center; justify-content:center;"><i class="fa-brands fa-whatsapp" style="margin-right:6px;"></i> Order</button>
-                </div>
+            <div class="card-actions" style="display:flex; gap:5px; margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0;">
+                <button class="add-to-cart-btn" onclick="addItemToCart(${itemId}, '${itemType}')" style="flex:1; background:var(--teal); color:white; border:none; padding:6px 6px; border-radius:7px; cursor:pointer; font-weight:700; font-size:0.7rem; display:flex; align-items:center; justify-content:center; gap:3px;"><i class="fa-solid fa-cart-shopping" style="font-size:0.65rem;"></i> Add to Cart</button>
+                <button class="buy-now-btn" onclick="orderSingleItemViaWhatsApp(${itemId}, '${itemType}')" style="background:#0f172a; color:white; border:none; padding:6px 8px; border-radius:7px; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; justify-content:center;"><i class="fa-brands fa-whatsapp"></i></button>
             </div>
         </div>
     `;
 }
+
 function renderProducts(inventory) {
     const grid = document.getElementById('products-dynamic-grid');
     const countDisplay = document.getElementById('results-count-display');
@@ -626,3 +690,102 @@ function checkoutCartViaWhatsApp() {
 
 
 
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadPublicPromotions();
+    loadHeroOffers();
+});
+
+function loadPublicPromotions() {
+    fetch('database/promotions.php?action=public_active')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('promos-container');
+            if(container) {
+                if(data.status === 'success' && data.data.length > 0) {
+                    container.innerHTML = data.data.map(p => `
+                        <div class="promo-card" style="background-color: ${p.bg_color}">
+                            <div class="promo-badge">${p.promo_type}</div>
+                            <div class="promo-content">
+                                <div class="promo-title">${p.title}</div>
+                                <div class="promo-subtitle">${p.subtitle || ''}</div>
+                            </div>
+                            <img src="${p.image_url}" class="promo-img" onerror="this.style.display='none'">
+                        </div>
+                    `).join('');
+                } else {
+                    document.querySelector('.promotions-section').style.display = 'none';
+                }
+            }
+        });
+}
+
+function filterByCategory(cat) {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.value = '';
+    
+    const items = document.querySelectorAll('.cat-chip');
+    items.forEach(i => i.style.opacity = '0.6');
+    if (window.event && window.event.currentTarget) {
+        window.event.currentTarget.style.opacity = '1';
+    }
+    
+    if (!cat || cat === '') {
+        renderProducts(globalItems);
+        return;
+    }
+    const filtered = globalItems.filter(item => {
+        const itemCat = (item.category || '').toLowerCase();
+        const itemName = (item.item_name || item.shoe_name || item.cloth_name || '').toLowerCase();
+        const target = cat.toLowerCase();
+        return itemCat.includes(target) || itemName.includes(target);
+    });
+    renderProducts(filtered);
+}
+
+function loadHeroOffers() {
+    fetch('database/inventory.php?action=list')
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success' && data.data.length > 0) {
+                let offerShoes = data.data.filter(s => parseInt(s.quantity) > 0);
+                offerShoes = offerShoes.slice(0, 5);
+                
+                const container = document.getElementById('hero-slideshow-container');
+                if(!container || offerShoes.length === 0) return;
+                
+                let slidesHtml = '';
+                offerShoes.forEach((shoe, idx) => {
+                    const img = (shoe.images && shoe.images.length > 0) ? shoe.images[0] : (shoe.image || 'assets/images/hero-shoe.png');
+                    const encodedShoe = encodeURIComponent(JSON.stringify(shoe));
+                    const leftPos = idx === 0 ? '0' : '100%';
+                    
+                    slidesHtml += <div class="hero-slide" data-shoe=" + encodedShoe + " onclick="openProductDetails(JSON.parse(decodeURIComponent(this.getAttribute('data-shoe'))))" style="position: absolute; top: 0; left:  + leftPos + ; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;">
+                        <img src=" + img + " alt=" + shoe.shoe_name + " class="hero-shoe" style="max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">
+                    </div>;
+                });
+                container.innerHTML = slidesHtml;
+                
+                let currentIndex = 0;
+                const slides = container.querySelectorAll('.hero-slide');
+                if(slides.length > 1) {
+                    setInterval(() => {
+                        let nextIndex = (currentIndex + 1) % slides.length;
+                        
+                        slides[currentIndex].style.transition = 'left 0.5s ease';
+                        slides[currentIndex].style.left = '-100%';
+                        
+                        slides[nextIndex].style.transition = 'none';
+                        slides[nextIndex].style.left = '100%';
+                        
+                        void slides[nextIndex].offsetWidth;
+                        
+                        slides[nextIndex].style.transition = 'left 0.5s ease';
+                        slides[nextIndex].style.left = '0';
+                        
+                        currentIndex = nextIndex;
+                    }, 2000);
+                }
+            }
+        });
+}

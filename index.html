@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=2">
     <link rel="icon" href="assets/images/logo.png" type="image/png">
 </head>
 <body>
@@ -80,8 +80,33 @@
                     </a>
                 </div>
             </div>
-            <div class="hero-img-wrap">
-                <img src="assets/images/hero_nike_green.png" alt="Linchking Sneakers" class="hero-shoe" id="hero-shoe-img">
+            <div class="hero-img-wrap" style="position: relative; overflow: hidden; width:100%; display:flex; align-items:center; justify-content:center;">
+                <div class="hero-blob"></div>
+                <div id="hero-slideshow-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; overflow: hidden;">
+                    <!-- Slides will be injected here via JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROMOTIONS SLIDER ===== -->
+    <section class="promotions-section">
+        <div class="container">
+            <div class="promos-container" id="promos-container">
+                <!-- Promos will be injected here via JS -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- ===== CATEGORY CHIPS ===== -->
+    <section class="category-chips-section">
+        <div class="container">
+            <div class="category-chips-container" id="category-chips-container">
+                <div class="cat-chip" onclick="filterByCategory('')">
+                    <div class="cat-chip-icon"><i class="fa-solid fa-border-all"></i></div>
+                    <span>All Categories</span>
+                </div>
+                <!-- Categories will be injected here via JS -->
             </div>
         </div>
     </section>
@@ -271,6 +296,10 @@
 
                 <!-- Product Grid Area -->
                 <div class="products-content">
+                    <!-- Mobile Filter Toggle -->
+                    <button class="mobile-filter-btn" onclick="document.querySelector('.products-sidebar').classList.toggle('open')" style="display:none; align-items:center; gap:6px; background:var(--navy); color:white; border:none; padding:8px 14px; border-radius:8px; font-size:0.8rem; font-weight:600; cursor:pointer; margin-bottom:10px;">
+                        <i class="fa-solid fa-sliders"></i> Filters
+                    </button>
                     <div class="products-topbar">
                         <p class="results-count" id="results-count-display"><span class="icon"><i class="fa-solid fa-shoe-prints"></i></span> Showing 0 products</p>
                         <div class="topbar-actions">
@@ -283,8 +312,8 @@
                                 </select>
                             </div>
                             <div class="view-toggles">
-                                <button class="view-btn-toggle active"><i class="fa-solid fa-table-cells-large"></i></button>
-                                <button class="view-btn-toggle"><i class="fa-solid fa-list-ul"></i></button>
+                                <button class="view-btn-toggle active" id="btn-grid-view" onclick="setProductView('grid')"><i class="fa-solid fa-table-cells-large"></i></button>
+                                <button class="view-btn-toggle" id="btn-list-view" onclick="setProductView('list')"><i class="fa-solid fa-list-ul"></i></button>
                             </div>
                         </div>
                     </div>
@@ -552,6 +581,7 @@
 
 </body>
 </html>
+
 
 
 
