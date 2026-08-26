@@ -451,8 +451,8 @@ function createItemCard(item) {
             </div>
             
             <div class="card-actions" style="display:flex; gap:5px; margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0;">
-                <button class="add-to-cart-btn" onclick="addItemToCart(${itemId}, '${itemType}')" style="flex:1; background:var(--teal); color:white; border:none; padding:6px 6px; border-radius:7px; cursor:pointer; font-weight:700; font-size:0.7rem; display:flex; align-items:center; justify-content:center; gap:3px;"><i class="fa-solid fa-cart-shopping" style="font-size:0.65rem;"></i> Add to Cart</button>
-                <button class="buy-now-btn" onclick="orderSingleItemViaWhatsApp(${itemId}, '${itemType}')" style="background:#0f172a; color:white; border:none; padding:6px 8px; border-radius:7px; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; justify-content:center;"><i class="fa-brands fa-whatsapp"></i></button>
+                <button class="add-to-cart-btn" onclick="addItemToCart(this, ${itemId}, '${itemType}')" style="flex:1; background:var(--teal); color:white; border:none; padding:6px 6px; border-radius:7px; cursor:pointer; font-weight:700; font-size:0.7rem; display:flex; align-items:center; justify-content:center; gap:3px;"><i class="fa-solid fa-cart-shopping" style="font-size:0.65rem;"></i> Add to Cart</button>
+                <button class="buy-now-btn" onclick="orderSingleItemViaWhatsApp(this, ${itemId}, '${itemType}')" style="background:#0f172a; color:white; border:none; padding:6px 8px; border-radius:7px; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; justify-content:center;"><i class="fa-brands fa-whatsapp"></i></button>
             </div>
         </div>
     `;
@@ -694,6 +694,7 @@ function checkoutCartViaWhatsApp() {
 document.addEventListener('DOMContentLoaded', () => {
     loadPublicPromotions();
     loadHeroOffers();
+    loadHeroOffers();
 });
 
 function loadPublicPromotions() {
@@ -744,6 +745,62 @@ function filterByCategory(cat) {
 }
 
 
+
+function openProductDetails(item) {
+    const itemType = item.item_type || (item.shoe_id ? 'shoe' : 'cloth');
+    const itemId = item.item_id || item.shoe_id || item.cloth_id;
+    const itemName = (item.item_name || item.shoe_name || item.cloth_name || 'Product').replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+    const priceNum = parseFloat(item.selling_price || 0);
+    const price = priceNum.toLocaleString();
+    let rawSizes = item.sizes || item.size;
+    let sizesArr = [];
+    if (Array.isArray(rawSizes)) sizesArr = rawSizes;
+    else if (rawSizes && typeof rawSizes === 'string') {
+        try { let parsed = JSON.parse(rawSizes); sizesArr = Array.isArray(parsed) ? parsed : [rawSizes]; }
+        catch(e) { sizesArr = rawSizes.includes(',') ? rawSizes.split(',').map(s => s.trim()) : [rawSizes]; }
+    }
+    sizesArr = sizesArr.filter(s => s !== null && s !== undefined && String(s).trim() !== '');
+    let rawColors = item.colors || item.color;
+    let colorsArr = [];
+    if (Array.isArray(rawColors)) colorsArr = rawColors;
+    else if (rawColors && typeof rawColors === 'string') {
+        try { let parsed = JSON.parse(rawColors); colorsArr = Array.isArray(parsed) ? parsed : [rawColors]; }
+        catch(e) { colorsArr = rawColors.includes(',') ? rawColors.split(',').map(c => c.trim()) : [rawColors]; }
+    }
+    colorsArr = colorsArr.filter(c => c !== null && c !== undefined && String(c).trim() !== '');
+    let sizeDropdown = '';
+    if (sizesArr.length > 0) {
+        let opts = sizesArr.map(s => '<option value="' + s + '">Size ' + s + '</option>').join('');
+        sizeDropdown = '<select id="client-size-' + itemId + '" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none;"><option value="">Select Size</option>' + opts + '</select>';
+    }
+    let colorDropdown = '';
+    if (colorsArr.length > 0) {
+        let opts = colorsArr.map(c => '<option value="' + c + '">' + c + '</option>').join('');
+        colorDropdown = '<select id="client-color-' + itemId + '" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; font-size:1rem; outline:none; margin-top:10px;"><option value="">Select Color</option>' + opts + '</select>';
+    }
+    const img = (item.images && item.images.length > 0) ? item.images[0] : (item.image || 'assets/images/hero-shoe.png');
+    let modalHtml = '<div id="product-details-modal" class="product-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px;">';
+    modalHtml += '<div style="background:#fff; border-radius:15px; width:100%; max-width:400px; overflow:hidden; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.2);">';
+    modalHtml += '<button onclick="this.closest(\'#product-details-modal\').remove()" style="position:absolute; top:15px; right:15px; background:#f1f5f9; border:none; width:30px; height:30px; border-radius:50%; font-size:1.2rem; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:10;"><i class="fa-solid fa-xmark"></i></button>';
+    modalHtml += '<div style="background:#f8fafc; padding:20px; display:flex; justify-content:center;">';
+    modalHtml += '<img src="' + img + '" alt="' + itemName + '" style="max-height:200px; max-width:100%; object-fit:contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));">';
+    modalHtml += '</div>';
+    modalHtml += '<div style="padding:20px;">';
+    modalHtml += '<h2 style="margin:0 0 10px 0; font-size:1.3rem; color:var(--navy);">' + itemName + '</h2>';
+    modalHtml += '<div style="font-size:1.2rem; font-weight:800; color:var(--teal); margin-bottom:15px;">KSh ' + price + '</div>';
+    modalHtml += sizeDropdown;
+    modalHtml += colorDropdown;
+    modalHtml += '<div style="display:flex; gap:10px; margin-top:20px;">';
+    modalHtml += '<button onclick="addItemToCart(this, ' + itemId + ', \'' + itemType + '\'); this.closest(\'#product-details-modal\').remove();" style="flex:1; background:var(--teal); color:white; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>';
+    modalHtml += '<button onclick="orderSingleItemViaWhatsApp(this, ' + itemId + ', \'' + itemType + '\'); this.closest(\'#product-details-modal\').remove();" style="flex:1; background:#0f172a; color:white; border:none; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-brands fa-whatsapp"></i> Buy Now</button>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    modalHtml += '</div>';
+    const existing = document.getElementById('product-details-modal');
+    if (existing) existing.remove();
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
 function loadHeroOffers() {
     fetch('database/inventory.php?action=list')
         .then(function(res) { return res.json(); })
@@ -751,7 +808,7 @@ function loadHeroOffers() {
             if(data.status === 'success' && data.data.length > 0) {
                 var inStockShoes = data.data.filter(function(s) { return parseInt(s.quantity) > 0; });
                 var offerShoes = inStockShoes.filter(function(s) { return parseFloat(s.original_price) > parseFloat(s.selling_price); });
-                if (offerShoes.length === 0) { offerShoes = inStockShoes; }
+                if (offerShoes.length === 0) offerShoes = inStockShoes;
                 offerShoes = offerShoes.slice(0, 5);
                 var container = document.getElementById('hero-slideshow-container');
                 if(!container || offerShoes.length === 0) return;
