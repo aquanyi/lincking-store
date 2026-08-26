@@ -749,7 +749,9 @@ function loadHeroOffers() {
         .then(function(res) { return res.json(); })
         .then(function(data) {
             if(data.status === 'success' && data.data.length > 0) {
-                var offerShoes = data.data.filter(function(s) { return parseInt(s.quantity) > 0; });
+                var inStockShoes = data.data.filter(function(s) { return parseInt(s.quantity) > 0; });
+                var offerShoes = inStockShoes.filter(function(s) { return parseFloat(s.original_price) > parseFloat(s.selling_price); });
+                if (offerShoes.length === 0) { offerShoes = inStockShoes; }
                 offerShoes = offerShoes.slice(0, 5);
                 var container = document.getElementById('hero-slideshow-container');
                 if(!container || offerShoes.length === 0) return;
