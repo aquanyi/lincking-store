@@ -743,46 +743,39 @@ function filterByCategory(cat) {
     renderProducts(filtered);
 }
 
+
 function loadHeroOffers() {
     fetch('database/inventory.php?action=list')
-        .then(res => res.json())
-        .then(data => {
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
             if(data.status === 'success' && data.data.length > 0) {
-                let offerShoes = data.data.filter(s => parseInt(s.quantity) > 0);
+                var offerShoes = data.data.filter(function(s) { return parseInt(s.quantity) > 0; });
                 offerShoes = offerShoes.slice(0, 5);
-                
-                const container = document.getElementById('hero-slideshow-container');
+                var container = document.getElementById('hero-slideshow-container');
                 if(!container || offerShoes.length === 0) return;
-                
-                let slidesHtml = '';
-                offerShoes.forEach((shoe, idx) => {
-                    const img = (shoe.images && shoe.images.length > 0) ? shoe.images[0] : (shoe.image || 'assets/images/hero-shoe.png');
-                    const encodedShoe = encodeURIComponent(JSON.stringify(shoe));
-                    const leftPos = idx === 0 ? '0' : '100%';
-                    
-                    slidesHtml += <div class="hero-slide" data-shoe=" + encodedShoe + " onclick="openProductDetails(JSON.parse(decodeURIComponent(this.getAttribute('data-shoe'))))" style="position: absolute; top: 0; left:  + leftPos + ; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;">
-                        <img src=" + img + " alt=" + shoe.shoe_name + " class="hero-shoe" style="max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">
-                    </div>;
+                var slidesHtml = '';
+                offerShoes.forEach(function(shoe, idx) {
+                    var img = (shoe.images && shoe.images.length > 0) ? shoe.images[0] : (shoe.image || 'assets/images/hero-shoe.png');
+                    var encodedShoe = encodeURIComponent(JSON.stringify(shoe));
+                    var leftPos = (idx === 0) ? '0' : '100%';
+                    var shoeName = shoe.shoe_name.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                    slidesHtml += '<div class="hero-slide" data-shoe="' + encodedShoe + '" onclick="openProductDetails(JSON.parse(decodeURIComponent(this.dataset.shoe)))" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;">';
+                    slidesHtml += '<img src="' + img + '" alt="' + shoeName + '" class="hero-shoe" style="max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">';
+                    slidesHtml += '</div>';
                 });
                 container.innerHTML = slidesHtml;
-                
-                let currentIndex = 0;
-                const slides = container.querySelectorAll('.hero-slide');
+                var currentIndex = 0;
+                var slides = container.querySelectorAll('.hero-slide');
                 if(slides.length > 1) {
-                    setInterval(() => {
-                        let nextIndex = (currentIndex + 1) % slides.length;
-                        
+                    setInterval(function() {
+                        var nextIndex = (currentIndex + 1) % slides.length;
                         slides[currentIndex].style.transition = 'left 0.5s ease';
                         slides[currentIndex].style.left = '-100%';
-                        
                         slides[nextIndex].style.transition = 'none';
                         slides[nextIndex].style.left = '100%';
-                        
                         void slides[nextIndex].offsetWidth;
-                        
                         slides[nextIndex].style.transition = 'left 0.5s ease';
                         slides[nextIndex].style.left = '0';
-                        
                         currentIndex = nextIndex;
                     }, 2000);
                 }
