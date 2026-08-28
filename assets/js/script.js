@@ -523,14 +523,15 @@ function toggleCart() {
     }
 }
 
-function addItemToCart(itemId, itemType) {
+function addItemToCart(btn, itemId, itemType) {
     const item = globalItems.find(i => i.item_id == itemId && i.item_type === itemType);
     if (!item) return;
 
     let selSize = '';
     let selColor = '';
-    const sizeElem = document.getElementById(`client-size-${itemId}`);
-    const colorElem = document.getElementById(`client-color-${itemId}`);
+    const container = btn.closest(".product-card") || btn.closest(".product-modal") || document;
+    const sizeElem = container.querySelector(`select[id^="client-size-"]`);
+    const colorElem = container.querySelector(`select[id^="client-color-"]`);
     
     if (sizeElem) {
         selSize = sizeElem.value;
@@ -630,7 +631,7 @@ function generateAdminLink(items) {
     return `${baseUrl}dashboard.html?import_cart=${payload}`;
 }
 
-function orderSingleItemViaWhatsApp(itemId, itemType) {
+function orderSingleItemViaWhatsApp(btn, itemId, itemType) {
     const item = globalItems.find(s => s.item_id == itemId && s.item_type === itemType);
     if(!item) return;
 
