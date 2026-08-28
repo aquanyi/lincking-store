@@ -687,32 +687,73 @@ function checkoutCartViaWhatsApp() {
     window.open(`https://wa.me/254727642806?text=${msg}`, '_blank');
 }
 
+// ----------------------------------------------------
+// UNIFIED PROMOTIONS FOR MOBILE & DESKTOP
+// ----------------------------------------------------
+
 document.addEventListener('DOMContentLoaded', () => {
     loadPublicPromotions();
-    loadHeroOffers();
 });
 
 function loadPublicPromotions() {
     fetch('database/promotions.php?action=public_active')
         .then(res => res.json())
         .then(data => {
-            const container = document.getElementById('promos-container');
-            if (!container) return;
-            if (data.status === 'success' && data.data.length > 0) {
-                renderPromoSlider(container, data.data);
+            const mobileContainer = document.getElementById('mobile-promos-container');
+            const desktopContainer = document.getElementById('desktop-hero-spinning-container');
+            
+            if (data.status === 'success' && data.data && data.data.length > 0) {
+                // Render Mobile Slider
+                if (mobileContainer) {
+                    renderPromoSlider(mobileContainer, data.data);
+                    const wrapper = document.getElementById('mobile-promos-wrapper');
+                    if (wrapper) wrapper.classList.add('active-promos');
+                }
+                // Render Desktop Spinning Image
+                if (desktopContainer) {
+                    renderDesktopSpinningPromos(desktopContainer, data.data);
+                }
             } else {
-                const sec = document.querySelector('.promotions-section');
-                if (sec) sec.style.display = 'none';
+                // Fallback to old "Offer Shoes" if no explicit banners exist
+                loadHeroOffers();
             }
         })
         .catch(() => {
-            const sec = document.querySelector('.promotions-section');
-            if (sec) sec.style.display = 'none';
+            loadHeroOffers();
         });
 }
 
-/* ---- Promotions slider: builds the carousel markup and drives autoplay,
-   arrow navigation, dot navigation, and touch-swipe on mobile ---- */
+function renderDesktopSpinningPromos(container, promos) {
+    let slidesHtml = '';
+    promos.forEach((p, idx) => {
+        const leftPos = (idx === 0) ? '0' : '100%';
+        // Use the title safely
+        const safeTitle = p.title ? p.title.replace(/'/g, "&apos;").replace(/"/g, "&quot;") : "Offer";
+        slidesHtml += '<div class="hero-slide" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;" onclick="showView(\'products\'); return false;">';
+        slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" class="hero-shoe" onerror="this.style.display=\'none\'" style="max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">';
+        slidesHtml += '</div>';
+    });
+    
+    container.innerHTML = slidesHtml;
+    
+    let currentIndex = 0;
+    const slides = container.querySelectorAll('.hero-slide');
+    if (slides.length > 1) {
+        setInterval(() => {
+            const nextIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].style.transition = 'left 0.5s ease';
+            slides[currentIndex].style.left = '-100%';
+            slides[nextIndex].style.transition = 'none';
+            slides[nextIndex].style.left = '100%';
+            void slides[nextIndex].offsetWidth;
+            slides[nextIndex].style.transition = 'left 0.5s ease';
+            slides[nextIndex].style.left = '0';
+            currentIndex = nextIndex;
+        }, 3000);
+    }
+}
+
+// Mobile slider rendering logic (original user logic)
 let promoIndex = 0;
 let promoTotal = 0;
 let promoTimer = null;
@@ -790,30 +831,47 @@ function updatePromoSlide() {
     document.querySelectorAll('.promo-dot').forEach((d, i) => d.classList.toggle('active', i === promoIndex));
 }
 
-function filterByCategory(cat) {
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) searchInput.value = '';
-    
-    const items = document.querySelectorAll('.cat-chip');
-    items.forEach(i => i.style.opacity = '0.6');
-    if (window.event && window.event.currentTarget) {
-        window.event.currentTarget.style.opacity = '1';
-    }
-    
-    if (!cat || cat === '') {
-        renderProducts(globalItems);
-        return;
-    }
-    const filtered = globalItems.filter(item => {
-        const itemCat = (item.category || '').toLowerCase();
-        const itemName = (item.item_name || item.shoe_name || item.cloth_name || '').toLowerCase();
-        const target = cat.toLowerCase();
-        return itemCat.includes(target) || itemName.includes(target);
-    });
-    renderProducts(filtered);
+// Fallback logic for when there are no active promotions configured
+function loadHeroOffers() {
+    fetch('database/inventory.php?action=list')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if(data.status === 'success' && data.data.length > 0) {
+                var inStockShoes = data.data.filter(function(s) { return parseInt(s.quantity) > 0; });
+                var offerShoes = inStockShoes.filter(function(s) { return parseFloat(s.original_price) > parseFloat(s.selling_price); });
+                if (offerShoes.length === 0) offerShoes = inStockShoes;
+                offerShoes = offerShoes.slice(0, 5);
+                var container = document.getElementById('desktop-hero-spinning-container');
+                if(!container || offerShoes.length === 0) return;
+                var slidesHtml = '';
+                offerShoes.forEach(function(shoe, idx) {
+                    var img = (shoe.images && shoe.images.length > 0) ? shoe.images[0] : (shoe.image || 'assets/images/hero-shoe.png');
+                    var encodedShoe = encodeURIComponent(JSON.stringify(shoe));
+                    var leftPos = (idx === 0) ? '0' : '100%';
+                    var shoeName = shoe.shoe_name.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                    slidesHtml += '<div class="hero-slide" data-shoe="' + encodedShoe + '" onclick="openProductDetails(JSON.parse(decodeURIComponent(this.dataset.shoe)))" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;">';
+                    slidesHtml += '<img src="' + img + '" alt="' + shoeName + '" class="hero-shoe" style="max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">';
+                    slidesHtml += '</div>';
+                });
+                container.innerHTML = slidesHtml;
+                var currentIndex = 0;
+                var slides = container.querySelectorAll('.hero-slide');
+                if(slides.length > 1) {
+                    setInterval(function() {
+                        var nextIndex = (currentIndex + 1) % slides.length;
+                        slides[currentIndex].style.transition = 'left 0.5s ease';
+                        slides[currentIndex].style.left = '-100%';
+                        slides[nextIndex].style.transition = 'none';
+                        slides[nextIndex].style.left = '100%';
+                        void slides[nextIndex].offsetWidth;
+                        slides[nextIndex].style.transition = 'left 0.5s ease';
+                        slides[nextIndex].style.left = '0';
+                        currentIndex = nextIndex;
+                    }, 3000); // 3 sec so it is smooth
+                }
+            }
+        });
 }
-
-
 
 function openProductDetails(item) {
     const itemType = item.item_type || (item.shoe_id ? 'shoe' : 'cloth');
@@ -869,45 +927,4 @@ function openProductDetails(item) {
     const existing = document.getElementById('product-details-modal');
     if (existing) existing.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
-}
-
-function loadHeroOffers() {
-    fetch('database/inventory.php?action=list')
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-            if(data.status === 'success' && data.data.length > 0) {
-                var inStockShoes = data.data.filter(function(s) { return parseInt(s.quantity) > 0; });
-                var offerShoes = inStockShoes.filter(function(s) { return parseFloat(s.original_price) > parseFloat(s.selling_price); });
-                if (offerShoes.length === 0) offerShoes = inStockShoes;
-                offerShoes = offerShoes.slice(0, 5);
-                var container = document.getElementById('hero-slideshow-container');
-                if(!container || offerShoes.length === 0) return;
-                var slidesHtml = '';
-                offerShoes.forEach(function(shoe, idx) {
-                    var img = (shoe.images && shoe.images.length > 0) ? shoe.images[0] : (shoe.image || 'assets/images/hero-shoe.png');
-                    var encodedShoe = encodeURIComponent(JSON.stringify(shoe));
-                    var leftPos = (idx === 0) ? '0' : '100%';
-                    var shoeName = shoe.shoe_name.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-                    slidesHtml += '<div class="hero-slide" data-shoe="' + encodedShoe + '" onclick="openProductDetails(JSON.parse(decodeURIComponent(this.dataset.shoe)))" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;">';
-                    slidesHtml += '<img src="' + img + '" alt="' + shoeName + '" class="hero-shoe" style="max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">';
-                    slidesHtml += '</div>';
-                });
-                container.innerHTML = slidesHtml;
-                var currentIndex = 0;
-                var slides = container.querySelectorAll('.hero-slide');
-                if(slides.length > 1) {
-                    setInterval(function() {
-                        var nextIndex = (currentIndex + 1) % slides.length;
-                        slides[currentIndex].style.transition = 'left 0.5s ease';
-                        slides[currentIndex].style.left = '-100%';
-                        slides[nextIndex].style.transition = 'none';
-                        slides[nextIndex].style.left = '100%';
-                        void slides[nextIndex].offsetWidth;
-                        slides[nextIndex].style.transition = 'left 0.5s ease';
-                        slides[nextIndex].style.left = '0';
-                        currentIndex = nextIndex;
-                    }, 2000);
-                }
-            }
-        });
 }

@@ -1737,3 +1737,18 @@ button:active, .btn:active, .btn-action:active, .btn-primary:active, .btn-second
     font-weight: 400;
 }
 
+
+/* Viewport Toggles for unified hero */
+.desktop-only-hero-img { display: flex; }
+.mobile-only-promos { display: none; }
+@media (max-width: 780px) {
+    .desktop-only-hero-img { display: none !important; }
+    .mobile-only-promos.active-promos {
+        display: block;
+        width: 100%;
+        padding: 15px 15px 0;
+        z-index: 10;
+        position: relative;
+    }
+}
+

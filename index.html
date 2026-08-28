@@ -48,8 +48,16 @@
     ========================================= -->
     <div id="home-view" class="view-section active-view">
     
-    <!-- ===== HERO ===== -->
+    <!-- ===== HERO (Unified for Mobile & Desktop) ===== -->
     <section class="hero" id="home">
+        
+        <!-- MOBILE VIEW: Promotions Slider at top -->
+        <div class="mobile-only-promos" id="mobile-promos-wrapper">
+            <div class="promos-container promo-slider" id="mobile-promos-container">
+                <!-- Mobile Promos will be injected here via JS -->
+            </div>
+        </div>
+
         <div class="container hero-container">
             <div class="hero-content">
                 <p class="hero-label"><span class="label-line"></span> WELCOME TO LINCHKING STORES</p>
@@ -80,20 +88,13 @@
                     </a>
                 </div>
             </div>
-            <div class="hero-img-wrap" style="position: relative; overflow: hidden; width:100%; display:flex; align-items:center; justify-content:center;">
+            
+            <!-- DESKTOP VIEW: Spinning Image -->
+            <div class="hero-img-wrap desktop-only-hero-img" style="position: relative; overflow: hidden; width:100%; align-items:center; justify-content:center;">
                 <div class="hero-blob"></div>
-                <div id="hero-slideshow-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; overflow: hidden;">
-                    <!-- Slides will be injected here via JS -->
+                <div id="desktop-hero-spinning-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; overflow: hidden;">
+                    <!-- Desktop Spinning Promos will be injected here -->
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== PROMOTIONS SLIDER ===== -->
-    <section class="promotions-section">
-        <div class="container">
-            <div class="promos-container promo-slider" id="promos-container">
-                <!-- Promos will be injected here via JS -->
             </div>
         </div>
     </section>
@@ -570,4 +571,5 @@
 
 </body>
 </html>
+
 
