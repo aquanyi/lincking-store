@@ -734,15 +734,15 @@ function renderDesktopSpinningPromos(container, promos) {
         
         slidesHtml += '<div class="hero-slide" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;" onclick="showView(\'products\'); return false;">';
         
-        // The animated blob, dynamically colored to match the promotion
-        slidesHtml += '<div class="hero-blob" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 380px; height: 380px; background: ' + bgColor + '; animation: blobShape 8s ease-in-out infinite; z-index: 0;"></div>';
+        // 1. Made the animated colored blob bigger (500px)
+        slidesHtml += '<div class="hero-blob" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; background: ' + bgColor + '; animation: blobShape 8s ease-in-out infinite; z-index: 0;"></div>';
         
-        // The spinning shoe (visible normally, NO multiply blend so black/white images look perfect)
+        // 2. The spinning shoe (normally visible, no multiply blend)
         slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" class="hero-shoe" onerror="this.style.display=\'none\'" style="position: relative; z-index: 2; max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">';
         
-        // The floating overlays (glassmorphism)
-        slidesHtml += '<div class="glass-promo-badge" style="background: ' + bgColor + ';">' + promoType + '</div>';
-        slidesHtml += '<div class="glass-promo-text"><h3>' + safeTitle + '</h3>' + subtitle + '</div>';
+        // 3. Make the tags visible with unique colors (white background, colored text)
+        slidesHtml += '<div class="glass-promo-badge" style="background: white; color: ' + bgColor + '; right: 10%;">' + promoType + '</div>';
+        slidesHtml += '<div class="glass-promo-text" style="background: white; border-color: ' + bgColor + ';"><h3>' + safeTitle + '</h3>' + subtitle + '</div>';
         
         slidesHtml += '</div>';
     });
@@ -940,6 +940,7 @@ function openProductDetails(item) {
     if (existing) existing.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
+
 
 
 
