@@ -730,19 +730,22 @@ function renderDesktopSpinningPromos(container, promos) {
         const safeTitle = p.title ? p.title.replace(/'/g, "&apos;").replace(/"/g, "&quot;") : "Offer";
         const bgColor = p.bg_color || 'var(--teal)';
         const promoType = p.promo_type || 'Offer';
-        const subtitle = p.subtitle ? '<p>' + p.subtitle + '</p>' : '';
+        const subtitle = p.subtitle ? '<p style="color: white; opacity: 0.95;">' + p.subtitle + '</p>' : '';
         
         slidesHtml += '<div class="hero-slide" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;" onclick="showView(\'products\'); return false;">';
         
-        // 1. Made the animated colored blob bigger (500px)
-        slidesHtml += '<div class="hero-blob" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; background: ' + bgColor + '; animation: blobShape 8s ease-in-out infinite; z-index: 0;"></div>';
+        // 1. The big colored animated blob (now bigger: 600px)
+        slidesHtml += '<div class="hero-blob" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background: ' + bgColor + '; animation: blobShape 8s ease-in-out infinite; z-index: 0; opacity: 0.95;"></div>';
         
-        // 2. The spinning shoe (normally visible, no multiply blend)
-        slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" class="hero-shoe" onerror="this.style.display=\'none\'" style="position: relative; z-index: 2; max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">';
+        // 2. The white circle directly behind the shoe to ensure the image is always 100% visible
+        slidesHtml += '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; background: white; border-radius: 50%; z-index: 1; box-shadow: 0 10px 30px rgba(0,0,0,0.08);"></div>';
         
-        // 3. Make the tags visible with unique colors (white background, colored text)
-        slidesHtml += '<div class="glass-promo-badge" style="background: white; color: ' + bgColor + '; right: 10%;">' + promoType + '</div>';
-        slidesHtml += '<div class="glass-promo-text" style="background: white; border-color: ' + bgColor + ';"><h3>' + safeTitle + '</h3>' + subtitle + '</div>';
+        // 3. The spinning shoe
+        slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" class="hero-shoe" onerror="this.style.display=\'none\'" style="position: relative; z-index: 2; max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.2));">';
+        
+        // 4. The tags (Vibrant unique color, white text, white border)
+        slidesHtml += '<div class="glass-promo-badge" style="background: ' + bgColor + '; color: white; border: 2px solid white; right: 5%; box-shadow: 0 8px 20px rgba(0,0,0,0.25);">' + promoType + '</div>';
+        slidesHtml += '<div class="glass-promo-text" style="background: ' + bgColor + '; color: white; border: 2px solid white; box-shadow: 0 12px 30px rgba(0,0,0,0.25);"><h3 style="color: white; font-size: 1.4rem; text-shadow: none;">' + safeTitle + '</h3>' + subtitle + '</div>';
         
         slidesHtml += '</div>';
     });
@@ -940,6 +943,7 @@ function openProductDetails(item) {
     if (existing) existing.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
+
 
 
 
