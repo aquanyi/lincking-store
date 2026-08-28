@@ -726,26 +726,30 @@ function loadPublicPromotions() {
 function renderDesktopSpinningPromos(container, promos) {
     let slidesHtml = '';
     promos.forEach((p, idx) => {
-        const leftPos = (idx === 0) ? '0' : '100%';
+        // First slide visible, rest hidden via opacity (not left offset!)
+        const opacity = (idx === 0) ? '1' : '0';
+        const zIndex = (idx === 0) ? '10' : '1';
+        
         const safeTitle = p.title ? p.title.replace(/'/g, "&apos;").replace(/"/g, "&quot;") : "Offer";
         const bgColor = p.bg_color || 'var(--teal)';
         const promoType = p.promo_type || 'Offer';
         const subtitle = p.subtitle ? '<p style="color: white; opacity: 0.95;">' + p.subtitle + '</p>' : '';
         
-        slidesHtml += '<div class="hero-slide" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;" onclick="showView(\'products\'); return false;">';
+        // Slide container positioned at 0, using opacity for crossfading
+        slidesHtml += '<div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: ' + opacity + '; z-index: ' + zIndex + '; transition: opacity 0.8s ease; cursor: pointer;" onclick="showView(\'products\'); return false;">';
         
-        // 1. The big colored animated blob (now bigger: 600px)
+        // 1. The big colored animated blob (600px, freely overflows container without chopping)
         slidesHtml += '<div class="hero-blob" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 600px; height: 600px; background: ' + bgColor + '; animation: blobShape 8s ease-in-out infinite; z-index: 0; opacity: 0.95;"></div>';
         
-        // 2. The white circle directly behind the shoe to ensure the image is always 100% visible
+        // 2. The white circle directly behind the shoe
         slidesHtml += '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; background: white; border-radius: 50%; z-index: 1; box-shadow: 0 10px 30px rgba(0,0,0,0.08);"></div>';
         
-        // 3. The spinning shoe
-        slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" class="hero-shoe" onerror="this.style.display=\'none\'" style="position: relative; z-index: 2; max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.2));">';
+        // 3. The shoe image (Absolute positioned to prevent any flexbox squishing bugs)
+        slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" class="hero-shoe" onerror="this.style.display=\'none\'" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); z-index: 2; height: 280px; width: 100%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.2));">';
         
         // 4. The tags (Vibrant unique color, white text, white border)
         slidesHtml += '<div class="glass-promo-badge" style="background: ' + bgColor + '; color: white; border: 2px solid white; right: 5%; box-shadow: 0 8px 20px rgba(0,0,0,0.25);">' + promoType + '</div>';
-        slidesHtml += '<div class="glass-promo-text" style="background: ' + bgColor + '; color: white; border: 2px solid white; box-shadow: 0 12px 30px rgba(0,0,0,0.25);"><h3 style="color: white; font-size: 1.4rem; text-shadow: none;">' + safeTitle + '</h3>' + subtitle + '</div>';
+        slidesHtml += '<div class="glass-promo-text" style="background: ' + bgColor + '; color: white; border: 2px solid white; box-shadow: 0 12px 30px rgba(0,0,0,0.25);"><h3 style="color: white; font-size: 1.4rem; text-shadow: none; margin-bottom:5px;">' + safeTitle + '</h3>' + subtitle + '</div>';
         
         slidesHtml += '</div>';
     });
@@ -757,15 +761,17 @@ function renderDesktopSpinningPromos(container, promos) {
     if (slides.length > 1) {
         setInterval(() => {
             const nextIndex = (currentIndex + 1) % slides.length;
-            slides[currentIndex].style.transition = 'left 0.5s ease';
-            slides[currentIndex].style.left = '-100%';
-            slides[nextIndex].style.transition = 'none';
-            slides[nextIndex].style.left = '100%';
-            void slides[nextIndex].offsetWidth;
-            slides[nextIndex].style.transition = 'left 0.5s ease';
-            slides[nextIndex].style.left = '0';
+            
+            // Fade out current
+            slides[currentIndex].style.opacity = '0';
+            slides[currentIndex].style.zIndex = '1';
+            
+            // Fade in next
+            slides[nextIndex].style.opacity = '1';
+            slides[nextIndex].style.zIndex = '10';
+            
             currentIndex = nextIndex;
-        }, 3000);
+        }, 3500); // 3.5s crossfade
     }
 }
 // Mobile slider rendering logic (original user logic)
@@ -943,6 +949,8 @@ function openProductDetails(item) {
     if (existing) existing.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
+
+
 
 
 
