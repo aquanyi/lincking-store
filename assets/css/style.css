@@ -1752,3 +1752,10 @@ button:active, .btn:active, .btn-action:active, .btn-primary:active, .btn-second
     }
 }
 
+
+/* Executive Hero Fixes */
+.hero { flex-direction: column; justify-content: center; }
+#desktop-hero-spinning-container img.hero-shoe {
+    mix-blend-mode: multiply;
+}
+
