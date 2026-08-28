@@ -727,10 +727,20 @@ function renderDesktopSpinningPromos(container, promos) {
     let slidesHtml = '';
     promos.forEach((p, idx) => {
         const leftPos = (idx === 0) ? '0' : '100%';
-        // Use the title safely
         const safeTitle = p.title ? p.title.replace(/'/g, "&apos;").replace(/"/g, "&quot;") : "Offer";
+        const bgColor = p.bg_color || 'var(--teal)';
+        const promoType = p.promo_type || 'Offer';
+        const subtitle = p.subtitle ? '<p>' + p.subtitle + '</p>' : '';
+        
         slidesHtml += '<div class="hero-slide" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;" onclick="showView(\'products\'); return false;">';
+        
+        // The spinning shoe
         slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" class="hero-shoe" onerror="this.style.display=\'none\'" style="max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">';
+        
+        // The floating overlays
+        slidesHtml += '<div class="glass-promo-badge" style="background: ' + bgColor + ';">' + promoType + '</div>';
+        slidesHtml += '<div class="glass-promo-text"><h3>' + safeTitle + '</h3>' + subtitle + '</div>';
+        
         slidesHtml += '</div>';
     });
     
@@ -752,7 +762,6 @@ function renderDesktopSpinningPromos(container, promos) {
         }, 3000);
     }
 }
-
 // Mobile slider rendering logic (original user logic)
 let promoIndex = 0;
 let promoTotal = 0;
@@ -928,3 +937,4 @@ function openProductDetails(item) {
     if (existing) existing.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
+
