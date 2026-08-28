@@ -736,20 +736,20 @@ function renderDesktopSpinningPromos(container, promos) {
         
         slidesHtml += '<div class="hero-slide" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: ' + opacity + '; z-index: ' + zIndex + '; transition: opacity 0.8s ease; cursor: pointer; display: flex; align-items: center; justify-content: center;" onclick="showView(\'products\'); return false;">';
         
-        // The CIRCLE card (like the mobile card, but a circle)
-        slidesHtml += '<div style="background: ' + bgColor + '; width: 450px; height: 450px; border-radius: 50%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 40px; text-align: center; overflow: visible;">';
+        // The CIRCLE card (450px)
+        slidesHtml += '<div style="background: ' + bgColor + '; width: 450px; height: 450px; border-radius: 50%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 45px; text-align: center; overflow: visible;">';
         
         // Badge at the top of the circle
-        slidesHtml += '<div style="background: rgba(255,255,255,0.2); color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(5px);">' + promoType + '</div>';
+        slidesHtml += '<div style="background: rgba(255,255,255,0.2); color: white; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(5px);">' + promoType + '</div>';
         
         // Text
-        slidesHtml += '<div style="color: white; margin-bottom: 20px; z-index: 3; position: relative;">';
+        slidesHtml += '<div style="color: white; z-index: 3; position: relative;">';
         slidesHtml += '<h3 style="margin: 0 0 5px 0; font-size: 2.2rem; font-weight: 900; line-height: 1.1; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">' + safeTitle + '</h3>';
         slidesHtml += subtitle;
         slidesHtml += '</div>';
         
-        // Image positioned at the bottom of the circle (overflowing slightly for a 3D effect!)
-        slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" onerror="this.style.display=\'none\'" style="position: absolute; bottom: -20px; max-height: 280px; max-width: 110%; object-fit: contain; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3)); z-index: 2; transform: rotate(-5deg);">';
+        // Image positioned perfectly inside the bottom of the circle
+        slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" onerror="this.style.display=\'none\'" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) rotate(-5deg); max-height: 240px; max-width: 85%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.3)); z-index: 2;">';
         
         slidesHtml += '</div>'; // end circle card
         slidesHtml += '</div>'; // end hero-slide
@@ -945,6 +945,7 @@ function openProductDetails(item) {
     if (existing) existing.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
+
 
 
 
