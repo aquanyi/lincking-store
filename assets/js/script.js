@@ -637,8 +637,9 @@ function orderSingleItemViaWhatsApp(btn, itemId, itemType) {
 
     let selSize = '';
     let selColor = '';
-    const sizeElem = document.getElementById(`client-size-${itemId}`);
-    const colorElem = document.getElementById(`client-color-${itemId}`);
+    const container = btn.closest(".product-card") || btn.closest(".product-modal") || document;
+    const sizeElem = container.querySelector(`select[id^="client-size-"]`);
+    const colorElem = container.querySelector(`select[id^="client-color-"]`);
     
     if (sizeElem) {
         selSize = sizeElem.value;
@@ -686,15 +687,8 @@ function checkoutCartViaWhatsApp() {
     window.open(`https://wa.me/254727642806?text=${msg}`, '_blank');
 }
 
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
     loadPublicPromotions();
-    loadHeroOffers();
     loadHeroOffers();
 });
 
@@ -703,23 +697,97 @@ function loadPublicPromotions() {
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById('promos-container');
-            if(container) {
-                if(data.status === 'success' && data.data.length > 0) {
-                    container.innerHTML = data.data.map(p => `
-                        <div class="promo-card" style="background-color: ${p.bg_color}">
-                            <div class="promo-badge">${p.promo_type}</div>
-                            <div class="promo-content">
-                                <div class="promo-title">${p.title}</div>
-                                <div class="promo-subtitle">${p.subtitle || ''}</div>
-                            </div>
-                            <img src="${p.image_url}" class="promo-img" onerror="this.style.display='none'">
-                        </div>
-                    `).join('');
-                } else {
-                    document.querySelector('.promotions-section').style.display = 'none';
-                }
+            if (!container) return;
+            if (data.status === 'success' && data.data.length > 0) {
+                renderPromoSlider(container, data.data);
+            } else {
+                const sec = document.querySelector('.promotions-section');
+                if (sec) sec.style.display = 'none';
             }
+        })
+        .catch(() => {
+            const sec = document.querySelector('.promotions-section');
+            if (sec) sec.style.display = 'none';
         });
+}
+
+/* ---- Promotions slider: builds the carousel markup and drives autoplay,
+   arrow navigation, dot navigation, and touch-swipe on mobile ---- */
+let promoIndex = 0;
+let promoTotal = 0;
+let promoTimer = null;
+
+function renderPromoSlider(container, promos) {
+    const slides = promos.map(p => `
+        <div class="promo-card" style="background:${p.bg_color || 'linear-gradient(135deg, var(--navy), #1a3a52)'}" onclick="showView('products'); return false;">
+            <span class="promo-badge">${p.promo_type || 'Offer'}</span>
+            <div class="promo-content">
+                <div class="promo-title">${p.title}</div>
+                ${p.subtitle ? `<div class="promo-subtitle">${p.subtitle}</div>` : ''}
+            </div>
+            ${p.image_url ? `<img src="${p.image_url}" class="promo-img" onerror="this.style.display='none'">` : ''}
+        </div>
+    `).join('');
+
+    const multi = promos.length > 1;
+    const dots = multi ? promos.map((_, i) => `<button class="promo-dot${i === 0 ? ' active' : ''}" onclick="goToPromo(${i})" aria-label="Go to promotion ${i + 1}"></button>`).join('') : '';
+
+    container.innerHTML = `
+        <div class="promo-track" id="promo-track">${slides}</div>
+        ${multi ? `
+        <button class="promo-arrow prev" onclick="shiftPromo(-1)" aria-label="Previous promotion"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="promo-arrow next" onclick="shiftPromo(1)" aria-label="Next promotion"><i class="fa-solid fa-chevron-right"></i></button>
+        <div class="promo-dots">${dots}</div>` : ''}
+    `;
+
+    if (multi) initPromoSlider(container, promos.length);
+}
+
+function initPromoSlider(container, total) {
+    promoTotal = total;
+    promoIndex = 0;
+    startPromoAutoplay();
+
+    container.addEventListener('mouseenter', stopPromoAutoplay);
+    container.addEventListener('mouseleave', startPromoAutoplay);
+
+    let touchStartX = 0;
+    container.addEventListener('touchstart', e => {
+        touchStartX = e.touches[0].clientX;
+        stopPromoAutoplay();
+    }, { passive: true });
+    container.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (dx > 40) shiftPromo(-1);
+        else if (dx < -40) shiftPromo(1);
+        startPromoAutoplay();
+    }, { passive: true });
+}
+
+function startPromoAutoplay() {
+    stopPromoAutoplay();
+    if (promoTotal > 1) promoTimer = setInterval(() => shiftPromo(1), 4500);
+}
+
+function stopPromoAutoplay() {
+    if (promoTimer) clearInterval(promoTimer);
+}
+
+function shiftPromo(dir) {
+    promoIndex = (promoIndex + dir + promoTotal) % promoTotal;
+    updatePromoSlide();
+}
+
+function goToPromo(i) {
+    promoIndex = i;
+    updatePromoSlide();
+    startPromoAutoplay();
+}
+
+function updatePromoSlide() {
+    const track = document.getElementById('promo-track');
+    if (track) track.style.transform = `translateX(-${promoIndex * 100}%)`;
+    document.querySelectorAll('.promo-dot').forEach((d, i) => d.classList.toggle('active', i === promoIndex));
 }
 
 function filterByCategory(cat) {
@@ -802,6 +870,7 @@ function openProductDetails(item) {
     if (existing) existing.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
+
 function loadHeroOffers() {
     fetch('database/inventory.php?action=list')
         .then(function(res) { return res.json(); })
