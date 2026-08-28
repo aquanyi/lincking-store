@@ -730,20 +730,21 @@ function renderDesktopSpinningPromos(container, promos) {
         const safeTitle = p.title ? p.title.replace(/'/g, "&apos;").replace(/"/g, "&quot;") : "Offer";
         const bgColor = p.bg_color || 'var(--teal)';
         const promoType = p.promo_type || 'Offer';
-        const subtitle = p.subtitle ? '<p class="promo-subtitle">' + p.subtitle + '</p>' : '';
+        const subtitle = p.subtitle ? '<p>' + p.subtitle + '</p>' : '';
         
         slidesHtml += '<div class="hero-slide" style="position: absolute; top: 0; left: ' + leftPos + '; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transition: left 0.5s ease; cursor: pointer;" onclick="showView(\'products\'); return false;">';
         
-        // Match the mobile promo card EXACTLY, but with multiply blend mode
-        slidesHtml += '<div class="promo-card" style="background: ' + bgColor + '; width: 95%; max-width: 500px; height: 300px; min-height: 300px; min-width: 0; flex: unset; margin: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.15);">';
-        slidesHtml += '<div class="promo-badge">' + promoType + '</div>';
-        slidesHtml += '<div class="promo-content"><h3 class="promo-title" style="font-size: 2.4rem;">' + safeTitle + '</h3>' + subtitle + '</div>';
+        // The animated blob, dynamically colored to match the promotion
+        slidesHtml += '<div class="hero-blob" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 380px; height: 380px; background: ' + bgColor + '; animation: blobShape 8s ease-in-out infinite; z-index: 0;"></div>';
         
-        // Multiply blend mode instantly hides the white background of the image
-        slidesHtml += '<img src="' + p.image_url + '" class="promo-img" onerror="this.style.display=\'none\'" style="max-height: 110%; max-width: 50%; mix-blend-mode: multiply;">';
+        // The spinning shoe (visible normally, NO multiply blend so black/white images look perfect)
+        slidesHtml += '<img src="' + p.image_url + '" alt="' + safeTitle + '" class="hero-shoe" onerror="this.style.display=\'none\'" style="position: relative; z-index: 2; max-height: 90%; max-width: 90%; object-fit: contain; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">';
         
-        slidesHtml += '</div>'; // end promo-card
-        slidesHtml += '</div>'; // end hero-slide
+        // The floating overlays (glassmorphism)
+        slidesHtml += '<div class="glass-promo-badge" style="background: ' + bgColor + ';">' + promoType + '</div>';
+        slidesHtml += '<div class="glass-promo-text"><h3>' + safeTitle + '</h3>' + subtitle + '</div>';
+        
+        slidesHtml += '</div>';
     });
     
     container.innerHTML = slidesHtml;
@@ -939,6 +940,7 @@ function openProductDetails(item) {
     if (existing) existing.remove();
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
+
 
 
 
